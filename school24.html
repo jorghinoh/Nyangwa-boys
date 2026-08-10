@@ -1,0 +1,3768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+    <title>Nyangwa Boys High School | Complete School Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ── reset & base ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        body {
+            background: #0a0a0a;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 36px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ═══════════════════════════════════════════════════════════════
+           COVER PAGE — FULL-SCREEN IMAGE CAROUSEL + SECTIONS
+           ═══════════════════════════════════════════════════════════════ */
+        .cover-page {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            overflow: hidden;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            background: #0a0a0a;
+        }
+        .cover-page.hidden {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+        }
+
+        /* ── CAROUSEL ── */
+        .carousel-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.8s ease-in-out;
+            will-change: opacity;
+            background-size: cover;
+            background-position: center;
+            background-color: #0d1b2a;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+        }
+        .carousel-slide::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
+        .carousel-slide .slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .carousel-slide .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1;
+        }
+        .slide-caption {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px 32px;
+            border-radius: 40px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            white-space: nowrap;
+            font-weight: 400;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+        }
+        @media (max-width: 550px) {
+            .slide-caption {
+                bottom: 70px;
+                font-size: 0.6rem;
+                padding: 5px 16px;
+                letter-spacing: 2px;
+            }
+        }
+
+        /* ── indicators ── */
+        .carousel-indicators {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            gap: 14px;
+        }
+        .carousel-indicators .dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+        .carousel-indicators .dot.active {
+            background: #2980b9;
+            transform: scale(1.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 30px rgba(41, 128, 185, 0.5);
+        }
+        .carousel-indicators .dot:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ── scroll hint ── */
+        .scroll-hint {
+            position: absolute;
+            bottom: 95px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: bounceDown 2.5s infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .scroll-hint i {
+            font-size: 1.2rem;
+        }
+        @keyframes bounceDown {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.3; }
+            50% { transform: translateX(-50%) translateY(10px); opacity: 1; }
+        }
+
+        /* ── cover credit ── */
+        .cover-credit {
+            position: absolute;
+            bottom: 18px;
+            right: 28px;
+            z-index: 3;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        .cover-credit strong {
+            color: rgba(41, 128, 185, 0.4);
+            font-weight: 600;
+        }
+        .cover-credit i {
+            color: rgba(41, 128, 185, 0.25);
+            margin: 0 4px;
+        }
+
+        /* ── hero content ── */
+        .cover-content-wrapper {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 30px;
+            text-align: center;
+            color: #fff;
+        }
+        .cover-content-inner {
+            max-width: 820px;
+            width: 100%;
+            animation: coverFadeIn 1.6s ease forwards;
+        }
+        @keyframes coverFadeIn {
+            0% { opacity: 0; transform: translateY(50px) scale(0.98); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .cover-logo {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+            padding: 8px;
+            border: 4px solid rgba(41, 128, 185, 0.8);
+            box-shadow: 0 12px 50px rgba(41, 55, 185, 0.3);
+            margin-bottom: 18px;
+            transition: transform 0.4s ease;
+        }
+        .cover-logo:hover {
+            transform: scale(1.06);
+        }
+        .cover-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 3.8rem;
+            color: #fff;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            margin-bottom: 6px;
+            text-shadow: 0 4px 40px rgba(0, 0, 0, 0.7);
+        }
+        .cover-title .highlight {
+            color: #3498db;
+            font-weight: 900;
+        }
+        .cover-sub {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 6px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 25px rgba(0, 0, 0, 0.5);
+        }
+        .cover-motto {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+            border-top: 1px solid rgba(41, 128, 185, 0.35);
+            border-bottom: 1px solid rgba(41, 51, 185, 0.35);
+            padding: 12px 0;
+            display: inline-block;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+        }
+        .cover-motto i {
+            color: #3498db;
+            margin: 0 8px;
+        }
+        .cover-description {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.75);
+            max-width: 680px;
+            margin: 6px auto 24px;
+            line-height: 1.8;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+        .cover-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 18px 52px;
+            border-radius: 60px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 40px rgba(41, 128, 185, 0.4);
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 5;
+        }
+        .cover-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 14px 55px rgba(41, 128, 185, 0.55);
+            background: #3498db;
+        }
+        .cover-btn:active {
+            transform: scale(0.97);
+        }
+        .cover-btn i {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .cover-btn:hover i {
+            transform: translateX(6px);
+        }
+        .cover-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 5px 22px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ─── COVER SECTIONS ──────────────────────────────────────────── */
+        .cover-section {
+            position: relative;
+            z-index: 2;
+            background: #f7faf8;
+            padding: 60px 40px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .cover-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .cover-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: #1b263b;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .cover-section .section-sub {
+            text-align: center;
+            color: #6e897f;
+            font-size: 1.05rem;
+            margin-bottom: 36px;
+            font-weight: 300;
+        }
+        .cover-section .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+        .cover-section .section-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            border: 1px solid #e5ece8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+        .cover-section .section-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+        }
+        .cover-section .section-card .icon {
+            font-size: 2.6rem;
+            color: #2980b9;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .cover-section .section-card h4 {
+            font-size: 1.2rem;
+            color: #1b263b;
+            margin-bottom: 8px;
+        }
+        .cover-section .section-card p {
+            color: #405a50;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .action-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 20px;
+            border: 1px solid #e5ece8;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+        .action-card .icon {
+            font-size: 2.8rem;
+            color: #2980b9;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .action-card h4 {
+            font-size: 1.3rem;
+            color: #1b263b;
+            margin-bottom: 6px;
+        }
+        .action-card p {
+            color: #6e897f;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .action-card .btn-sm {
+            margin-top: 12px;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .action-card .btn-sm:hover {
+            background: #1f6a9a;
+        }
+
+        /* ─── ABOUT SECTION ───────────────────────────────────────────── */
+        .about-section {
+            background: #f7faf8;
+            padding: 60px 40px;
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .about-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .about-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: #1b263b;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .about-section .section-sub {
+            text-align: center;
+            color: #6e897f;
+            font-size: 1.05rem;
+            margin-bottom: 36px;
+            font-weight: 300;
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+        .about-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 28px 24px;
+            border: 1px solid #e5ece8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .about-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+        }
+        .about-card .icon {
+            font-size: 2.2rem;
+            color: #2980b9;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .about-card h4 {
+            font-size: 1.2rem;
+            color: #1b263b;
+            margin-bottom: 8px;
+        }
+        .about-card p {
+            color: #405a50;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* ─── GALLERY SECTION ──────────────────────────────────────────── */
+        .gallery-section {
+            background: #fff;
+            padding: 60px 40px;
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid #e5ece8;
+        }
+        .gallery-section .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .gallery-section h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.2rem;
+            color: #1b263b;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .gallery-section .section-sub {
+            text-align: center;
+            color: #6e897f;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px;
+        }
+        .gallery-item {
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid #e5ece8;
+            background: #fff;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        .gallery-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+            background: #f0f5f2;
+        }
+        .gallery-item .gallery-info {
+            padding: 14px 18px 18px;
+        }
+        .gallery-item .gallery-info .caption {
+            font-weight: 600;
+            color: #1b263b;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .gallery-item .gallery-info .date {
+            font-size: 0.7rem;
+            color: #6e897f;
+        }
+        .gallery-item .gallery-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .gallery-item:hover .gallery-actions {
+            opacity: 1;
+        }
+        .gallery-item .gallery-actions button {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            border: none;
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .gallery-item .gallery-actions button:hover {
+            background: #c0392b;
+            transform: scale(1.1);
+        }
+        .gallery-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6e897f;
+            grid-column: 1 / -1;
+        }
+        .gallery-empty i {
+            font-size: 3.6rem;
+            color: #d1d9d4;
+            margin-bottom: 16px;
+            display: block;
+        }
+        .gallery-admin-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .gallery-admin-bar .btn-sm {
+            padding: 10px 28px;
+            font-size: 0.9rem;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gallery-admin-bar .btn-sm.primary {
+            background: #2980b9;
+            color: #fff;
+        }
+        .gallery-admin-bar .btn-sm.primary:hover {
+            background: #1f6a9a;
+            transform: translateY(-2px);
+        }
+        .gallery-admin-bar .btn-sm.outline {
+            background: transparent;
+            color: #1b263b;
+            border: 1.5px solid #1b263b;
+        }
+        .gallery-admin-bar .btn-sm.outline:hover {
+            background: #eaf2f8;
+        }
+
+        /* ─── FOOTER ────────────────────────────────────────────────────── */
+        .cover-footer {
+            background: #0a0a0a;
+            padding: 24px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            position: relative;
+            z-index: 2;
+        }
+        .cover-footer p {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+        .cover-footer p strong {
+            color: rgba(41, 128, 185, 0.4);
+            font-weight: 600;
+        }
+        .cover-footer p i {
+            color: rgba(41, 128, 185, 0.25);
+            margin: 0 4px;
+        }
+
+        /* ─── MODAL ────────────────────────────────────────────────────── */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.25s ease;
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+        .modal-content {
+            background: #fff;
+            max-width: 750px;
+            width: 100%;
+            border-radius: 32px;
+            padding: 32px 28px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-content h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1b263b;
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+        }
+        .modal-content label {
+            display: block;
+            font-weight: 600;
+            margin: 14px 0 4px;
+            color: #1f3a30;
+            font-size: 0.9rem;
+        }
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d9d4;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .modal-content input:focus,
+        .modal-content select:focus,
+        .modal-content textarea:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.12);
+        }
+        .modal-content textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+            flex-wrap: wrap;
+        }
+        .modal-actions .btn-sm {
+            flex: 1;
+            justify-content: center;
+            min-width: 100px;
+            padding: 12px 24px;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-actions .btn-sm.primary {
+            background: #2980b9;
+            color: #fff;
+        }
+        .modal-actions .btn-sm.primary:hover {
+            background: #1f6a9a;
+        }
+        .modal-actions .btn-sm.outline {
+            background: transparent;
+            color: #1b263b;
+            border: 1.5px solid #d1d9d4;
+        }
+        .modal-actions .btn-sm.outline:hover {
+            background: #f0f5f2;
+        }
+        .modal-actions .btn-sm.danger {
+            background: #c0392b;
+            color: #fff;
+        }
+        .modal-actions .btn-sm.danger:hover {
+            background: #a93226;
+        }
+        .image-upload-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin: 8px 0 12px;
+            border: 1px solid #e5ece8;
+            background: #f7faf8;
+        }
+        .image-upload-area {
+            border: 2px dashed #d1d9d4;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #fafcfa;
+        }
+        .image-upload-area:hover {
+            border-color: #2980b9;
+            background: #f0f5f2;
+        }
+        .image-upload-area input[type="file"] {
+            display: none;
+        }
+        .image-upload-area .upload-icon {
+            font-size: 2.8rem;
+            color: #6e897f;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .image-upload-area .upload-text {
+            color: #6e897f;
+            font-size: 0.95rem;
+        }
+
+        /* ─── LOGIN PANEL ────────────────────────────────────────────── */
+        .login-panel {
+            display: none;
+            flex-wrap: wrap;
+            min-height: 600px;
+            transition: opacity 0.6s ease;
+            background: #fff;
+        }
+        .login-panel.cover-active {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .login-left {
+            flex: 1.2;
+            background: linear-gradient(145deg, #0a0a0a 0%, #0d1b2a 40%, #1b263b 70%, #0a0a0a 100%);
+            padding: 48px 40px;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+        .login-left .login-logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .login-left .login-logo img {
+            max-width: 120px;
+            max-height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+            padding: 5px;
+            border: 3px solid #2980b9;
+        }
+        .login-left h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+        .login-left .tag {
+            text-align: center;
+            font-size: 1rem;
+            opacity: 0.8;
+            margin: 6px 0;
+        }
+        .login-left .copy {
+            margin-top: 60px;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            text-align: center;
+        }
+        .login-right {
+            flex: 1;
+            padding: 48px 40px;
+            background: #fff;
+        }
+        .login-right h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1b263b;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .role-selector {
+            display: flex;
+            gap: 16px;
+            margin: 16px 0 20px;
+            background: #f2f7f4;
+            padding: 6px 18px;
+            border-radius: 60px;
+            width: fit-content;
+        }
+        .role-selector label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            color: #1f3a30;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .role-selector label:hover {
+            background: rgba(41, 128, 185, 0.08);
+        }
+        .role-selector input[type="radio"] {
+            accent-color: #2980b9;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #1f3a30;
+            font-size: 0.9rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #d1d9d4;
+            border-radius: 18px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.12);
+        }
+        .signin-btn {
+            background: #1b263b;
+            color: #fff;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1.05rem;
+            transition: 0.2s;
+        }
+        .signin-btn:hover {
+            background: #0d1b2a;
+        }
+        .admin-note {
+            background: #eaf2f8;
+            border-radius: 20px;
+            padding: 14px 18px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: #1a2a3a;
+            border-left: 4px solid #2980b9;
+            line-height: 1.6;
+        }
+        .admin-note strong {
+            color: #1b263b;
+        }
+
+        /* ─── DASHBOARD ────────────────────────────────────────────────── */
+        .dashboard-container {
+            display: none;
+            background: #f7faf8;
+        }
+        .dash-layout {
+            display: flex;
+            min-height: 85vh;
+        }
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #e4ece8;
+            padding: 28px 0;
+            flex-shrink: 0;
+        }
+        .school-header {
+            padding: 0 24px 24px 24px;
+            border-bottom: 1px solid #eef2ef;
+            text-align: center;
+        }
+        .school-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border: 2px solid #e5ece8;
+            background: #f9f5f0;
+        }
+        .school-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1b263b;
+        }
+        .school-header p {
+            font-size: 0.7rem;
+            color: #6e897f;
+            margin-top: 4px;
+        }
+        .nav-items {
+            padding: 12px 0;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 24px;
+            margin: 4px 12px;
+            border-radius: 40px;
+            color: #405a50;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+        .nav-item.active,
+        .nav-item:hover {
+            background: #e5f4ef;
+            color: #136b53;
+        }
+        .logout-item {
+            color: #bc5a3c;
+            margin-top: 40px;
+        }
+        .logout-item:hover {
+            background: #fce8e3 !important;
+            color: #a1442a !important;
+        }
+        .content-area {
+            flex: 1;
+            padding: 32px 36px;
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+        .card {
+            background: #fff;
+            border-radius: 28px;
+            padding: 20px 24px;
+            border: 1px solid #e5ece8;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .card h3 {
+            margin-bottom: 12px;
+            color: #1f3a30;
+        }
+        .btn-sm {
+            background: #1b263b;
+            color: #fff;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-sm:hover {
+            background: #0d1b2a;
+        }
+        .btn-sm.outline {
+            background: transparent;
+            color: #1b263b;
+            border: 1.5px solid #1b263b;
+        }
+        .btn-sm.outline:hover {
+            background: #eaf2f8;
+        }
+        .btn-sm.danger {
+            background: #c0392b;
+            color: #fff;
+        }
+        .btn-sm.danger:hover {
+            background: #a93226;
+        }
+        .btn-sm.success {
+            background: #1f8a6b;
+            color: #fff;
+        }
+        .btn-sm.success:hover {
+            background: #166d54;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 1px solid #ecf3ef;
+        }
+        th {
+            color: #1f3a30;
+            font-weight: 600;
+        }
+        .points-badge {
+            background: #1b263b;
+            color: #fff;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-weight: 700;
+            display: inline-block;
+            font-size: 0.8rem;
+        }
+        .fee-balance {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #1e3a32;
+        }
+
+        /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+        @media (max-width: 850px) {
+            .cover-title { font-size: 2.6rem; }
+            .cover-sub { font-size: 1rem; letter-spacing: 3px; }
+            .cover-description { font-size: 0.95rem; padding: 0 10px; }
+            .cover-logo { width: 140px; height: 140px; }
+            .cover-btn { padding: 14px 36px; font-size: 1rem; }
+            .cover-section, .about-section, .gallery-section { padding: 40px 20px; }
+            .cover-section .section-grid, .about-grid { grid-template-columns: 1fr 1fr; }
+            .action-grid { grid-template-columns: 1fr 1fr; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+            .dash-layout { flex-direction: column; }
+            .sidebar { width: 100%; overflow-x: auto; }
+            .nav-items { display: flex; flex-wrap: wrap; gap: 4px; padding: 0 12px; }
+            .nav-item { padding: 10px 16px; margin: 2px 4px; font-size: 0.85rem; }
+            .content-area { padding: 20px 16px; max-height: none; }
+            .login-left, .login-right { padding: 28px 20px; }
+            .login-left h1 { font-size: 1.6rem; }
+            .carousel-indicators { bottom: 24px; gap: 10px; }
+            .carousel-indicators .dot { width: 12px; height: 12px; }
+            .scroll-hint { display: none; }
+            .cover-credit { bottom: 12px; right: 16px; font-size: 0.55rem; }
+            .gallery-admin-bar .btn-sm { font-size: 0.8rem; padding: 8px 18px; }
+            .slide-caption { bottom: 78px; font-size: 0.7rem; padding: 5px 18px; }
+        }
+        @media (max-width: 550px) {
+            .cover-title { font-size: 1.8rem; }
+            .cover-sub { font-size: 0.75rem; letter-spacing: 2px; }
+            .cover-description { font-size: 0.85rem; padding: 0 4px; }
+            .cover-logo { width: 100px; height: 100px; }
+            .cover-btn { padding: 12px 28px; font-size: 0.9rem; gap: 10px; }
+            .cover-section .section-grid, .about-grid { grid-template-columns: 1fr; }
+            .action-grid { grid-template-columns: 1fr; }
+            .gallery-grid { grid-template-columns: 1fr; }
+            .gallery-item img { height: 180px; }
+            .cover-section h2, .about-section h2, .gallery-section h2 { font-size: 1.6rem; }
+            .modal-content { padding: 20px 16px; }
+            .modal-actions .btn-sm { flex: 1 1 100%; }
+            .login-left { padding: 20px 16px; }
+            .login-right { padding: 20px 16px; }
+            .role-selector { width: 100%; justify-content: center; }
+            .gallery-admin-bar { flex-direction: column; align-items: stretch; }
+            .gallery-admin-bar .btn-sm { justify-content: center; }
+            .carousel-indicators .dot { width: 10px; height: 10px; gap: 8px; }
+            .slide-caption { bottom: 60px; font-size: 0.5rem; padding: 4px 14px; letter-spacing: 1px; }
+            .cover-credit { font-size: 0.5rem; right: 12px; bottom: 8px; }
+        }
+
+        /* ─── UTILITY ──────────────────────────────────────────────────── */
+        .footer-credit {
+            text-align: center;
+            padding: 10px 16px;
+            font-size: 0.75rem;
+            color: #938a9e;
+            border-top: 1px solid #e4ece8;
+            background: #fafcfa;
+            letter-spacing: 0.5px;
+        }
+        .footer-credit strong {
+            color: #1b263b;
+            font-weight: 600;
+        }
+        .footer-credit i {
+            color: #2980b9;
+            margin: 0 4px;
+        }
+        .edit-indicator {
+            display: inline-block;
+            background: #2980b9;
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 2px 8px;
+            border-radius: 30px;
+            margin-left: 8px;
+            vertical-align: middle;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- ═══════════════════════════════════════════════════════════════
+         COVER PAGE — FULL-SCREEN IMAGE CAROUSEL + SECTIONS
+         ═══════════════════════════════════════════════════════════════ -->
+    <div class="cover-page" id="coverPage">
+        <!-- Carousel container -->
+        <div class="carousel-container" id="carouselContainer">
+            <!-- slides injected by JS -->
+        </div>
+
+        <!-- Indicators -->
+        <div class="carousel-indicators" id="carouselIndicators"></div>
+
+        <!-- Scroll hint -->
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+
+        <!-- Credit -->
+        <div class="cover-credit">
+            <i class="fas fa-code"></i> by <strong>George Mulinge</strong> &nbsp;·&nbsp; ABNO Softwares
+        </div>
+
+        <!-- ─── HERO CONTENT ────────────────────────────────────────── -->
+        <div class="cover-content-wrapper">
+            <div class="cover-content-inner">
+                <div class="cover-badge"><i class="fas fa-graduation-cap"></i> &nbsp;Est. 2026</div>
+                <img id="coverLogoImg" class="cover-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232980b9'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3ENG%3C/text%3E%3C/svg%3E" alt="School Logo" />
+                <h1 class="cover-title" id="coverTitle">Nyangwa Boys <span class="highlight">High School</span></h1>
+                <div class="cover-sub" id="coverSubtitle">Discipline. Excellence. Success.</div>
+                <div class="cover-motto" id="coverMotto">
+                    <i class="fas fa-quote-left"></i> &nbsp; Knowledge &amp; Integrity &nbsp; <i class="fas fa-quote-right"></i>
+                </div>
+                <p class="cover-description" id="coverDescription">
+                    Nyangwa Boys High School is a center of academic excellence, character development, and holistic growth.
+                    We nurture young men to become leaders of integrity, equipped with knowledge and skills for a dynamic world.
+                </p>
+                <button class="cover-btn" id="enterPortalBtn">
+                    <span>Enter Portal</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ─── COVER SECTIONS ──────────────────────────────────────── -->
+        <div class="cover-section" id="communitySection">
+            <div class="container">
+                <h2 id="communityTitle">Our Community</h2>
+                <p class="section-sub" id="communitySub">A family of learners, teachers, and supporters</p>
+                <div class="section-grid" id="communityGrid"></div>
+            </div>
+        </div>
+
+        <div class="cover-section" style="background:#fff;" id="virtualTourSection">
+            <div class="container">
+                <h2 id="virtualTourTitle">Virtual Tour</h2>
+                <p class="section-sub" id="virtualTourSub">Explore our campus from anywhere</p>
+                <div class="section-grid" id="virtualTourGrid"></div>
+            </div>
+        </div>
+
+        <div class="cover-section" id="partnershipsSection">
+            <div class="container">
+                <h2 id="partnershipsTitle">Partnerships</h2>
+                <p class="section-sub" id="partnershipsSub">Collaborating for a brighter future</p>
+                <div class="section-grid" id="partnershipsGrid"></div>
+            </div>
+        </div>
+
+        <div class="cover-section" style="background:#eef3f0;" id="actionsSection">
+            <div class="container">
+                <h2 id="actionsTitle">Take the Next Step</h2>
+                <p class="section-sub" id="actionsSub">Start your journey with us today</p>
+                <div class="action-grid" id="actionsGrid"></div>
+            </div>
+        </div>
+
+        <!-- ─── ABOUT SECTION ───────────────────────────────────────── -->
+        <div class="about-section" id="aboutSection">
+            <div class="container">
+                <h2>About Our School</h2>
+                <p class="section-sub">Excellence in education, character, and service</p>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <span class="icon"><i class="fas fa-bullseye"></i></span>
+                        <h4>Our Mission</h4>
+                        <p>To provide quality education that develops disciplined, responsible, and innovative young men who are prepared for higher education and service to society.</p>
+                    </div>
+                    <div class="about-card">
+                        <span class="icon"><i class="fas fa-eye"></i></span>
+                        <h4>Our Vision</h4>
+                        <p>To be a center of academic excellence and character formation, producing graduates who are leaders of integrity and agents of positive change in their communities.</p>
+                    </div>
+                    <div class="about-card">
+                        <span class="icon"><i class="fas fa-heart"></i></span>
+                        <h4>Core Values</h4>
+                        <p><strong>Integrity</strong> · <strong>Discipline</strong> · <strong>Excellence</strong> · <strong>Respect</strong> · <strong>Service</strong> — values that define every Nyangwa Boy.</p>
+                    </div>
+                    <div class="about-card">
+                        <span class="icon"><i class="fas fa-users"></i></span>
+                        <h4>Our Community</h4>
+                        <p>Nyangwa Boys is a family of dedicated teachers, supportive parents, and motivated students working together to build a brighter future for our nation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── GALLERY SECTION ──────────────────────────────────────── -->
+        <div class="gallery-section" id="gallerySection">
+            <div class="container">
+                <h2>📸 School Gallery</h2>
+                <p class="section-sub">Moments that define our journey — academics, sports, and co-curricular life</p>
+                <div class="gallery-admin-bar" id="galleryAdminBar" style="display:none;">
+                    <button class="btn-sm primary" id="addGalleryImageBtn"><i class="fas fa-plus"></i> Add Image</button>
+                    <button class="btn-sm outline" id="refreshGalleryBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+                    <span style="font-size:0.8rem; color:#6e897f; display:flex; align-items:center;">
+                        <i class="fas fa-info-circle"></i> Hover over images to delete
+                    </span>
+                </div>
+                <div class="gallery-grid" id="coverGalleryGrid"></div>
+            </div>
+        </div>
+
+        <!-- ─── FOOTER ────────────────────────────────────────────────── -->
+        <div class="cover-footer">
+            <p>
+                <i class="fas fa-code"></i> Created with <i class="fas fa-heart" style="color:#e74c3c;"></i> by <strong>George Mulinge</strong> &nbsp;·&nbsp; ABNO Softwares International &nbsp;·&nbsp; © 2026 Nyangwa Boys High School
+            </p>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         LOGIN PANEL
+         ═══════════════════════════════════════════════════════════════ -->
+    <div id="loginContainer" class="login-panel" style="display:none;">
+        <div class="login-left" id="loginLeftPanel">
+            <div class="login-logo">
+                <img id="loginLogoImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232980b9'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3ENG%3C/text%3E%3C/svg%3E" alt="School Logo" />
+            </div>
+            <h1 id="loginSchoolName">Nyangwa Boys<br />High School</h1>
+            <div class="tag" id="loginSchoolMotto">Knowledge &amp; Integrity</div>
+            <div class="copy">&copy; 2026 — Smart Campus Portal</div>
+        </div>
+        <div class="login-right">
+            <h2>Welcome Back</h2>
+            <p style="color:#6e897f; margin-bottom:12px; font-size:0.95rem;">Sign in to access your portal</p>
+            <div class="role-selector">
+                <label><input type="radio" name="loginRole" value="student" checked /> 👩‍🎓 Student</label>
+                <label><input type="radio" name="loginRole" value="admin" /> 👩‍💼 Admin</label>
+            </div>
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Student ID (e.g., NY9027) or 'admin'" />
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Password" />
+            </div>
+            <button class="signin-btn" id="signinBtn">Sign In</button>
+            <div class="admin-note">
+                <i class="fas fa-info-circle"></i>
+                <strong>Complete School Portal:</strong> Admin adds students, assigns subjects, promotes forms (1→2→3→4), manages grades, and posts <strong>school activities &amp; gallery</strong>.
+                <br />Demo: <strong>NY9027</strong> (Form 1) | <strong>NY9028</strong> (Form 2) | Admin: <strong>admin</strong> / <strong>admin123</strong>
+                <br /><strong>Admin can edit all cover sections and manage carousel images.</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── DASHBOARD ────────────────────────────────────────────────── -->
+    <div id="dashboardContainer" class="dashboard-container">
+        <div class="dash-layout">
+            <div class="sidebar">
+                <div class="school-header">
+                    <img id="sidebarLogo" class="school-logo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232980b9'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3ENG%3C/text%3E%3C/svg%3E" alt="Logo" />
+                    <h2 id="schoolNameDisplay">Nyangwa Boys High School</h2>
+                    <p id="schoolMottoDisplay">Knowledge &amp; Integrity</p>
+                </div>
+                <div class="nav-items" id="dynamicNav"></div>
+                <div class="nav-item logout-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            </div>
+            <div class="content-area" id="mainContent"></div>
+        </div>
+        <div class="footer-credit">
+            <i class="fas fa-code"></i> Created by <strong>George Mulinge</strong> <i class="fas fa-heart" style="color:#2980b9;"></i> &nbsp;·&nbsp; ABNO Softwares International &nbsp;·&nbsp; © 2026
+        </div>
+    </div>
+</div>
+
+<!-- ─── GLOBAL MODAL ───────────────────────────────────────────────── -->
+<div id="globalModal" class="modal-overlay">
+    <div class="modal-content" id="modalInner"></div>
+</div>
+
+<script>
+    // ═══════════════════════════════════════════════════════════════
+    //  GRADING SYSTEMS
+    // ═══════════════════════════════════════════════════════════════
+
+    const DEFAULT_GRADING_SYSTEMS = {
+        formOne: {
+            name: "Form One Grading System",
+            description: "Lenient system for Form 1 (lower score thresholds)",
+            grades: [
+                { grade: "A", minScore: 70, maxScore: 100, points: 12 },
+                { grade: "A-", minScore: 65, maxScore: 69, points: 11 },
+                { grade: "B+", minScore: 60, maxScore: 64, points: 10 },
+                { grade: "B", minScore: 55, maxScore: 59, points: 9 },
+                { grade: "B-", minScore: 50, maxScore: 54, points: 8 },
+                { grade: "C+", minScore: 45, maxScore: 49, points: 7 },
+                { grade: "C", minScore: 40, maxScore: 44, points: 6 },
+                { grade: "C-", minScore: 35, maxScore: 39, points: 5 },
+                { grade: "D+", minScore: 30, maxScore: 34, points: 4 },
+                { grade: "D", minScore: 25, maxScore: 29, points: 3 },
+                { grade: "D-", minScore: 20, maxScore: 24, points: 2 },
+                { grade: "E", minScore: 0, maxScore: 19, points: 1 }
+            ]
+        },
+        formTwoFour: {
+            name: "Forms 2-4 Grading System",
+            description: "Standard KCSE-style system (stricter thresholds)",
+            grades: [
+                { grade: "A", minScore: 80, maxScore: 100, points: 12 },
+                { grade: "A-", minScore: 75, maxScore: 79, points: 11 },
+                { grade: "B+", minScore: 70, maxScore: 74, points: 10 },
+                { grade: "B", minScore: 65, maxScore: 69, points: 9 },
+                { grade: "B-", minScore: 60, maxScore: 64, points: 8 },
+                { grade: "C+", minScore: 55, maxScore: 59, points: 7 },
+                { grade: "C", minScore: 50, maxScore: 54, points: 6 },
+                { grade: "C-", minScore: 45, maxScore: 49, points: 5 },
+                { grade: "D+", minScore: 40, maxScore: 44, points: 4 },
+                { grade: "D", minScore: 35, maxScore: 39, points: 3 },
+                { grade: "D-", minScore: 30, maxScore: 34, points: 2 },
+                { grade: "E", minScore: 0, maxScore: 29, points: 1 }
+            ]
+        }
+    };
+
+    let gradingSystems = {};
+
+    function loadGradingSystems() {
+        const saved = localStorage.getItem("nyangwa_grading_systems");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.formOne && parsed.formTwoFour) {
+                    gradingSystems = parsed;
+                    return;
+                }
+            } catch (e) {}
+        }
+        gradingSystems = JSON.parse(JSON.stringify(DEFAULT_GRADING_SYSTEMS));
+        localStorage.setItem("nyangwa_grading_systems", JSON.stringify(gradingSystems));
+    }
+
+    function saveGradingSystems() {
+        localStorage.setItem("nyangwa_grading_systems", JSON.stringify(gradingSystems));
+    }
+
+    function getGradingSystemForForm(form) {
+        if (form === 1) return gradingSystems.formOne;
+        return gradingSystems.formTwoFour;
+    }
+
+    function getGradeInfoFromScore(score, form) {
+        const system = getGradingSystemForForm(form);
+        if (!system || !system.grades || system.grades.length === 0) {
+            return { grade: "E", points: 1 };
+        }
+        const sorted = [...system.grades].sort((a, b) => b.minScore - a.minScore);
+        for (let g of sorted) {
+            if (score >= g.minScore && score <= g.maxScore) {
+                return { grade: g.grade, points: g.points };
+            }
+        }
+        const lowest = system.grades.reduce((a, b) => a.minScore < b.minScore ? a : b);
+        return { grade: lowest.grade, points: lowest.points };
+    }
+
+    function getPointsFromGrade(grade, form) {
+        const system = getGradingSystemForForm(form);
+        if (!system || !system.grades) return 0;
+        const found = system.grades.find(g => g.grade === grade);
+        return found ? found.points : 0;
+    }
+
+    function getGradingSystemName(form) {
+        const system = getGradingSystemForForm(form);
+        return system ? system.name : "Unknown System";
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  COVER SETTINGS (hero + sections)
+    // ═══════════════════════════════════════════════════════════════
+
+    let coverSections = {};
+
+    function getDefaultCoverSections() {
+        return {
+            community: {
+                title: "Our Community",
+                subtitle: "A family of learners, teachers, and supporters",
+                cards: [
+                    { icon: "fa-users", title: "Inclusive Environment", description: "We welcome students from all backgrounds, fostering a culture of respect and unity." },
+                    { icon: "fa-hand-holding-heart", title: "Parent Involvement", description: "Parents are our partners in shaping the future of our boys through active engagement." },
+                    { icon: "fa-chalkboard-teacher", title: "Dedicated Staff", description: "Our teachers are passionate about education and committed to each student's success." }
+                ]
+            },
+            virtualTour: {
+                title: "Virtual Tour",
+                subtitle: "Explore our campus from anywhere",
+                cards: [
+                    { icon: "fa-school", title: "Classrooms & Labs", description: "State-of-the-art facilities designed for interactive and practical learning." },
+                    { icon: "fa-running", title: "Sports Facilities", description: "Well-maintained fields, courts, and gymnasium for holistic development." },
+                    { icon: "fa-book", title: "Library & Resource Centre", description: "A quiet space for research, reading, and collaborative study." }
+                ]
+            },
+            partnerships: {
+                title: "Partnerships",
+                subtitle: "Collaborating for a brighter future",
+                cards: [
+                    { icon: "fa-university", title: "Higher Education Links", description: "Partnerships with universities for scholarships and mentorship programs." },
+                    { icon: "fa-building", title: "Corporate Partners", description: "Local and international companies offering internship and career opportunities." },
+                    { icon: "fa-globe", title: "Community Outreach", description: "Working with NGOs and community groups to create positive impact." }
+                ]
+            },
+            actions: {
+                title: "Take the Next Step",
+                subtitle: "Start your journey with us today",
+                cards: [
+                    { icon: "fa-pencil-alt", title: "Apply Now", description: "Submit your application online and join our family.", link: "#apply" },
+                    { icon: "fa-coins", title: "Fee Structure", description: "Transparent and affordable fees with flexible payment plans.", link: "#fees" },
+                    { icon: "fa-graduation-cap", title: "Our Programmes", description: "Explore our academic and co-curricular programmes.", link: "#programmes" }
+                ]
+            }
+        };
+    }
+
+    function loadCoverSections() {
+        const saved = localStorage.getItem("nyangwa_cover_sections");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                const defaults = getDefaultCoverSections();
+                for (let key in defaults) {
+                    if (!parsed[key]) parsed[key] = defaults[key];
+                    if (!parsed[key].cards || parsed[key].cards.length === 0) {
+                        parsed[key].cards = defaults[key].cards;
+                    }
+                }
+                coverSections = parsed;
+                return;
+            } catch (e) {}
+        }
+        coverSections = getDefaultCoverSections();
+        localStorage.setItem("nyangwa_cover_sections", JSON.stringify(coverSections));
+    }
+
+    function saveCoverSections() {
+        localStorage.setItem("nyangwa_cover_sections", JSON.stringify(coverSections));
+    }
+
+    function renderCoverSections() {
+        renderSection('community', 'communitySection', 'communityGrid', 'communityTitle', 'communitySub');
+        renderSection('virtualTour', 'virtualTourSection', 'virtualTourGrid', 'virtualTourTitle', 'virtualTourSub');
+        renderSection('partnerships', 'partnershipsSection', 'partnershipsGrid', 'partnershipsTitle', 'partnershipsSub');
+        renderActions();
+    }
+
+    function renderSection(key, sectionId, gridId, titleId, subId) {
+        const data = coverSections[key];
+        if (!data) return;
+        document.getElementById(titleId).textContent = data.title;
+        document.getElementById(subId).textContent = data.subtitle;
+        const grid = document.getElementById(gridId);
+        if (!grid) return;
+        let html = '';
+        data.cards.forEach(card => {
+            html += `
+                <div class="section-card">
+                    <span class="icon"><i class="fas ${card.icon}"></i></span>
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+    }
+
+    function renderActions() {
+        const data = coverSections.actions;
+        if (!data) return;
+        document.getElementById('actionsTitle').textContent = data.title;
+        document.getElementById('actionsSub').textContent = data.subtitle;
+        const grid = document.getElementById('actionsGrid');
+        if (!grid) return;
+        let html = '';
+        data.cards.forEach(card => {
+            html += `
+                <div class="action-card">
+                    <span class="icon"><i class="fas ${card.icon}"></i></span>
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                    <a href="${card.link || '#'}" class="btn-sm">Learn More</a>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+    }
+
+    function showCoverSectionsEditor() {
+        const html = `
+            <h3>🖌️ Edit Cover Sections</h3>
+            <p style="color:#6e897f; font-size:0.9rem;">Customize the text and cards for the Community, Virtual Tour, Partnerships, and Action sections.</p>
+            <div style="margin-top:16px;">
+                <h4>Community</h4>
+                <label>Title</label><input id="commTitle" value="${coverSections.community.title.replace(/"/g,'&quot;')}" />
+                <label>Subtitle</label><input id="commSub" value="${coverSections.community.subtitle.replace(/"/g,'&quot;')}" />
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px;">
+                    <input id="commCard1Icon" value="${coverSections.community.cards[0].icon}" placeholder="icon" />
+                    <input id="commCard1Title" value="${coverSections.community.cards[0].title.replace(/"/g,'&quot;')}" placeholder="Title" />
+                    <input id="commCard1Desc" value="${coverSections.community.cards[0].description.replace(/"/g,'&quot;')}" placeholder="Description" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="commCard2Icon" value="${coverSections.community.cards[1].icon}" placeholder="icon" />
+                    <input id="commCard2Title" value="${coverSections.community.cards[1].title.replace(/"/g,'&quot;')}" placeholder="Title" />
+                    <input id="commCard2Desc" value="${coverSections.community.cards[1].description.replace(/"/g,'&quot;')}" placeholder="Description" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="commCard3Icon" value="${coverSections.community.cards[2].icon}" placeholder="icon" />
+                    <input id="commCard3Title" value="${coverSections.community.cards[2].title.replace(/"/g,'&quot;')}" placeholder="Title" />
+                    <input id="commCard3Desc" value="${coverSections.community.cards[2].description.replace(/"/g,'&quot;')}" placeholder="Description" />
+                </div>
+                <hr style="margin:20px 0;" />
+                <h4>Virtual Tour</h4>
+                <label>Title</label><input id="vtTitle" value="${coverSections.virtualTour.title.replace(/"/g,'&quot;')}" />
+                <label>Subtitle</label><input id="vtSub" value="${coverSections.virtualTour.subtitle.replace(/"/g,'&quot;')}" />
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px;">
+                    <input id="vtCard1Icon" value="${coverSections.virtualTour.cards[0].icon}" />
+                    <input id="vtCard1Title" value="${coverSections.virtualTour.cards[0].title.replace(/"/g,'&quot;')}" />
+                    <input id="vtCard1Desc" value="${coverSections.virtualTour.cards[0].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="vtCard2Icon" value="${coverSections.virtualTour.cards[1].icon}" />
+                    <input id="vtCard2Title" value="${coverSections.virtualTour.cards[1].title.replace(/"/g,'&quot;')}" />
+                    <input id="vtCard2Desc" value="${coverSections.virtualTour.cards[1].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="vtCard3Icon" value="${coverSections.virtualTour.cards[2].icon}" />
+                    <input id="vtCard3Title" value="${coverSections.virtualTour.cards[2].title.replace(/"/g,'&quot;')}" />
+                    <input id="vtCard3Desc" value="${coverSections.virtualTour.cards[2].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <hr style="margin:20px 0;" />
+                <h4>Partnerships</h4>
+                <label>Title</label><input id="partTitle" value="${coverSections.partnerships.title.replace(/"/g,'&quot;')}" />
+                <label>Subtitle</label><input id="partSub" value="${coverSections.partnerships.subtitle.replace(/"/g,'&quot;')}" />
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px;">
+                    <input id="partCard1Icon" value="${coverSections.partnerships.cards[0].icon}" />
+                    <input id="partCard1Title" value="${coverSections.partnerships.cards[0].title.replace(/"/g,'&quot;')}" />
+                    <input id="partCard1Desc" value="${coverSections.partnerships.cards[0].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="partCard2Icon" value="${coverSections.partnerships.cards[1].icon}" />
+                    <input id="partCard2Title" value="${coverSections.partnerships.cards[1].title.replace(/"/g,'&quot;')}" />
+                    <input id="partCard2Desc" value="${coverSections.partnerships.cards[1].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr; gap:8px; margin-top:4px;">
+                    <input id="partCard3Icon" value="${coverSections.partnerships.cards[2].icon}" />
+                    <input id="partCard3Title" value="${coverSections.partnerships.cards[2].title.replace(/"/g,'&quot;')}" />
+                    <input id="partCard3Desc" value="${coverSections.partnerships.cards[2].description.replace(/"/g,'&quot;')}" />
+                </div>
+                <hr style="margin:20px 0;" />
+                <h4>Action Cards</h4>
+                <label>Title</label><input id="actTitle" value="${coverSections.actions.title.replace(/"/g,'&quot;')}" />
+                <label>Subtitle</label><input id="actSub" value="${coverSections.actions.subtitle.replace(/"/g,'&quot;')}" />
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr 1fr; gap:8px;">
+                    <input id="actCard1Icon" value="${coverSections.actions.cards[0].icon}" />
+                    <input id="actCard1Title" value="${coverSections.actions.cards[0].title.replace(/"/g,'&quot;')}" />
+                    <input id="actCard1Desc" value="${coverSections.actions.cards[0].description.replace(/"/g,'&quot;')}" />
+                    <input id="actCard1Link" value="${coverSections.actions.cards[0].link || '#'}" placeholder="Link" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr 1fr; gap:8px; margin-top:4px;">
+                    <input id="actCard2Icon" value="${coverSections.actions.cards[1].icon}" />
+                    <input id="actCard2Title" value="${coverSections.actions.cards[1].title.replace(/"/g,'&quot;')}" />
+                    <input id="actCard2Desc" value="${coverSections.actions.cards[1].description.replace(/"/g,'&quot;')}" />
+                    <input id="actCard2Link" value="${coverSections.actions.cards[1].link || '#'}" placeholder="Link" />
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 2fr 3fr 1fr; gap:8px; margin-top:4px;">
+                    <input id="actCard3Icon" value="${coverSections.actions.cards[2].icon}" />
+                    <input id="actCard3Title" value="${coverSections.actions.cards[2].title.replace(/"/g,'&quot;')}" />
+                    <input id="actCard3Desc" value="${coverSections.actions.cards[2].description.replace(/"/g,'&quot;')}" />
+                    <input id="actCard3Link" value="${coverSections.actions.cards[2].link || '#'}" placeholder="Link" />
+                </div>
+                <div class="modal-actions">
+                    <button id="saveCoverSectionsBtn" class="btn-sm primary">💾 Save All Sections</button>
+                    <button id="resetCoverSectionsBtn" class="btn-sm outline">↩️ Reset to Defaults</button>
+                    <button id="cancelCoverSectionsBtn" class="btn-sm outline">Cancel</button>
+                </div>
+            </div>
+          `;
+        showModal("Edit Cover Sections", html, null);
+        setTimeout(() => {
+            document.getElementById('saveCoverSectionsBtn').addEventListener('click', () => {
+                coverSections.community.title = document.getElementById('commTitle').value.trim() || coverSections.community.title;
+                coverSections.community.subtitle = document.getElementById('commSub').value.trim() || coverSections.community.subtitle;
+                coverSections.community.cards[0].icon = document.getElementById('commCard1Icon').value.trim() || 'fa-users';
+                coverSections.community.cards[0].title = document.getElementById('commCard1Title').value.trim() || 'Community';
+                coverSections.community.cards[0].description = document.getElementById('commCard1Desc').value.trim() || '';
+                coverSections.community.cards[1].icon = document.getElementById('commCard2Icon').value.trim() || 'fa-hand-holding-heart';
+                coverSections.community.cards[1].title = document.getElementById('commCard2Title').value.trim() || 'Parent Involvement';
+                coverSections.community.cards[1].description = document.getElementById('commCard2Desc').value.trim() || '';
+                coverSections.community.cards[2].icon = document.getElementById('commCard3Icon').value.trim() || 'fa-chalkboard-teacher';
+                coverSections.community.cards[2].title = document.getElementById('commCard3Title').value.trim() || 'Dedicated Staff';
+                coverSections.community.cards[2].description = document.getElementById('commCard3Desc').value.trim() || '';
+
+                coverSections.virtualTour.title = document.getElementById('vtTitle').value.trim() || coverSections.virtualTour.title;
+                coverSections.virtualTour.subtitle = document.getElementById('vtSub').value.trim() || coverSections.virtualTour.subtitle;
+                coverSections.virtualTour.cards[0].icon = document.getElementById('vtCard1Icon').value.trim() || 'fa-school';
+                coverSections.virtualTour.cards[0].title = document.getElementById('vtCard1Title').value.trim() || 'Classrooms';
+                coverSections.virtualTour.cards[0].description = document.getElementById('vtCard1Desc').value.trim() || '';
+                coverSections.virtualTour.cards[1].icon = document.getElementById('vtCard2Icon').value.trim() || 'fa-running';
+                coverSections.virtualTour.cards[1].title = document.getElementById('vtCard2Title').value.trim() || 'Sports';
+                coverSections.virtualTour.cards[1].description = document.getElementById('vtCard2Desc').value.trim() || '';
+                coverSections.virtualTour.cards[2].icon = document.getElementById('vtCard3Icon').value.trim() || 'fa-book';
+                coverSections.virtualTour.cards[2].title = document.getElementById('vtCard3Title').value.trim() || 'Library';
+                coverSections.virtualTour.cards[2].description = document.getElementById('vtCard3Desc').value.trim() || '';
+
+                coverSections.partnerships.title = document.getElementById('partTitle').value.trim() || coverSections.partnerships.title;
+                coverSections.partnerships.subtitle = document.getElementById('partSub').value.trim() || coverSections.partnerships.subtitle;
+                coverSections.partnerships.cards[0].icon = document.getElementById('partCard1Icon').value.trim() || 'fa-university';
+                coverSections.partnerships.cards[0].title = document.getElementById('partCard1Title').value.trim() || 'Higher Education';
+                coverSections.partnerships.cards[0].description = document.getElementById('partCard1Desc').value.trim() || '';
+                coverSections.partnerships.cards[1].icon = document.getElementById('partCard2Icon').value.trim() || 'fa-building';
+                coverSections.partnerships.cards[1].title = document.getElementById('partCard2Title').value.trim() || 'Corporate';
+                coverSections.partnerships.cards[1].description = document.getElementById('partCard2Desc').value.trim() || '';
+                coverSections.partnerships.cards[2].icon = document.getElementById('partCard3Icon').value.trim() || 'fa-globe';
+                coverSections.partnerships.cards[2].title = document.getElementById('partCard3Title').value.trim() || 'Community Outreach';
+                coverSections.partnerships.cards[2].description = document.getElementById('partCard3Desc').value.trim() || '';
+
+                coverSections.actions.title = document.getElementById('actTitle').value.trim() || coverSections.actions.title;
+                coverSections.actions.subtitle = document.getElementById('actSub').value.trim() || coverSections.actions.subtitle;
+                coverSections.actions.cards[0].icon = document.getElementById('actCard1Icon').value.trim() || 'fa-pencil-alt';
+                coverSections.actions.cards[0].title = document.getElementById('actCard1Title').value.trim() || 'Apply Now';
+                coverSections.actions.cards[0].description = document.getElementById('actCard1Desc').value.trim() || '';
+                coverSections.actions.cards[0].link = document.getElementById('actCard1Link').value.trim() || '#';
+                coverSections.actions.cards[1].icon = document.getElementById('actCard2Icon').value.trim() || 'fa-coins';
+                coverSections.actions.cards[1].title = document.getElementById('actCard2Title').value.trim() || 'Fee Structure';
+                coverSections.actions.cards[1].description = document.getElementById('actCard2Desc').value.trim() || '';
+                coverSections.actions.cards[1].link = document.getElementById('actCard2Link').value.trim() || '#';
+                coverSections.actions.cards[2].icon = document.getElementById('actCard3Icon').value.trim() || 'fa-graduation-cap';
+                coverSections.actions.cards[2].title = document.getElementById('actCard3Title').value.trim() || 'Our Programmes';
+                coverSections.actions.cards[2].description = document.getElementById('actCard3Desc').value.trim() || '';
+                coverSections.actions.cards[2].link = document.getElementById('actCard3Link').value.trim() || '#';
+
+                saveCoverSections();
+                renderCoverSections();
+                closeModal();
+                if (currentRole === 'admin') renderAdminDashboard();
+            });
+            document.getElementById('resetCoverSectionsBtn').addEventListener('click', () => {
+                if (confirm('Reset all cover sections to default values?')) {
+                    coverSections = getDefaultCoverSections();
+                    saveCoverSections();
+                    renderCoverSections();
+                    closeModal();
+                    if (currentRole === 'admin') renderAdminDashboard();
+                }
+            });
+            document.getElementById('cancelCoverSectionsBtn').addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  COVER HERO SETTINGS
+    // ═══════════════════════════════════════════════════════════════
+
+    let coverSettings = {
+        title: "Nyangwa Boys High School",
+        subtitle: "Discipline. Excellence. Success.",
+        motto: "Knowledge & Integrity",
+        description: "Nyangwa Boys High School is a center of academic excellence, character development, and holistic growth. We nurture young men to become leaders of integrity, equipped with knowledge and skills for a dynamic world."
+    };
+
+    function loadCoverSettings() {
+        const saved = localStorage.getItem("nyangwa_cover_settings");
+        if (saved) {
+            try { const parsed = JSON.parse(saved); coverSettings = { ...coverSettings, ...parsed }; } catch (e) {}
+        }
+        applyCoverSettings();
+    }
+
+    function saveCoverSettings(settings) {
+        coverSettings = { ...coverSettings, ...settings };
+        localStorage.setItem("nyangwa_cover_settings", JSON.stringify(coverSettings));
+        applyCoverSettings();
+    }
+
+    function applyCoverSettings() {
+        const titleEl = document.getElementById('coverTitle');
+        if (titleEl) {
+            const parts = coverSettings.title.split(' ');
+            if (parts.length > 2) {
+                const first = parts.slice(0, -2).join(' ');
+                const last = parts.slice(-2).join(' ');
+                titleEl.innerHTML = `${first} <span class="highlight">${last}</span>`;
+            } else if (parts.length > 1) {
+                const first = parts.slice(0, -1).join(' ');
+                const last = parts[parts.length - 1];
+                titleEl.innerHTML = `${first} <span class="highlight">${last}</span>`;
+            } else {
+                titleEl.innerHTML = coverSettings.title;
+            }
+        }
+        const subEl = document.getElementById('coverSubtitle');
+        if (subEl) subEl.textContent = coverSettings.subtitle;
+        const mottoEl = document.getElementById('coverMotto');
+        if (mottoEl) {
+            mottoEl.innerHTML = `<i class="fas fa-quote-left"></i> &nbsp; ${coverSettings.motto} &nbsp; <i class="fas fa-quote-right"></i>`;
+        }
+        const descEl = document.getElementById('coverDescription');
+        if (descEl) descEl.textContent = coverSettings.description;
+        const coverLogo = document.getElementById('coverLogoImg');
+        if (coverLogo) coverLogo.src = schoolProfile.logo;
+    }
+
+    function showCoverPageEditor() {
+        const html = `
+            <h3>🖼️ Edit Cover Page Hero</h3>
+            <p style="color:#6e897f; font-size:0.9rem;">Customize the main text and logo on the cover page.</p>
+            <label>Cover Title</label>
+            <input id="coverTitleInput" value="${coverSettings.title.replace(/"/g, '&quot;')}" placeholder="e.g., Nyangwa Boys High School" />
+            <label>Subtitle</label>
+            <input id="coverSubtitleInput" value="${coverSettings.subtitle.replace(/"/g, '&quot;')}" placeholder="e.g., Discipline. Excellence. Success." />
+            <label>Motto</label>
+            <input id="coverMottoInput" value="${coverSettings.motto.replace(/"/g, '&quot;')}" placeholder="e.g., Knowledge & Integrity" />
+            <label>School Description</label>
+            <textarea id="coverDescriptionInput" placeholder="Describe your school..." rows="3">${coverSettings.description.replace(/"/g, '&quot;')}</textarea>
+            <div style="background:#0a0a0a; border-radius:20px; padding:20px; margin:12px 0; color:#fff; text-align:center;">
+              <div style="font-size:1.8rem; font-weight:800;" id="previewTitle">${coverSettings.title}</div>
+              <div style="font-size:0.9rem; opacity:0.7; letter-spacing:2px;" id="previewSub">${coverSettings.subtitle}</div>
+              <div style="font-size:0.9rem; font-style:italic; border-top:1px solid rgba(41,128,185,0.3); border-bottom:1px solid rgba(41,128,185,0.3); padding:8px 0; display:inline-block; margin-top:8px;" id="previewMotto">${coverSettings.motto}</div>
+              <div style="font-size:0.85rem; opacity:0.7; margin-top:12px; max-width:600px; margin-left:auto; margin-right:auto;" id="previewDesc">${coverSettings.description}</div>
+            </div>
+            <p style="font-size:0.75rem; color:#6e897f; margin-top:8px;"><i class="fas fa-sync-alt"></i> Live preview updates as you type.</p>
+            <div class="modal-actions">
+              <button id="saveCoverBtn" class="btn-sm primary">💾 Save Changes</button>
+              <button id="resetCoverBtn" class="btn-sm outline">↩️ Reset to Defaults</button>
+              <button id="cancelCoverBtn" class="btn-sm outline">Cancel</button>
+            </div>
+          `;
+        showModal("Cover Page Settings", html, null);
+        setTimeout(() => {
+            const titleInp = document.getElementById('coverTitleInput');
+            const subInp = document.getElementById('coverSubtitleInput');
+            const mottoInp = document.getElementById('coverMottoInput');
+            const descInp = document.getElementById('coverDescriptionInput');
+            const previewTitle = document.getElementById('previewTitle');
+            const previewSub = document.getElementById('previewSub');
+            const previewMotto = document.getElementById('previewMotto');
+            const previewDesc = document.getElementById('previewDesc');
+            const updatePreview = () => {
+                if (previewTitle) previewTitle.textContent = titleInp.value || 'Title';
+                if (previewSub) previewSub.textContent = subInp.value || 'Subtitle';
+                if (previewMotto) previewMotto.textContent = mottoInp.value || 'Motto';
+                if (previewDesc) previewDesc.textContent = descInp.value || 'Description';
+            };
+            titleInp.addEventListener('input', updatePreview);
+            subInp.addEventListener('input', updatePreview);
+            mottoInp.addEventListener('input', updatePreview);
+            descInp.addEventListener('input', updatePreview);
+            document.getElementById('saveCoverBtn').addEventListener('click', () => {
+                const newSettings = {
+                    title: titleInp.value.trim() || coverSettings.title,
+                    subtitle: subInp.value.trim() || coverSettings.subtitle,
+                    motto: mottoInp.value.trim() || coverSettings.motto,
+                    description: descInp.value.trim() || coverSettings.description,
+                };
+                saveCoverSettings(newSettings);
+                closeModal();
+                if (currentRole === 'admin') renderAdminDashboard();
+            });
+            document.getElementById('resetCoverBtn').addEventListener('click', () => {
+                const defaults = {
+                    title: "Nyangwa Boys High School",
+                    subtitle: "Discipline. Excellence. Success.",
+                    motto: "Knowledge & Integrity",
+                    description: "Nyangwa Boys High School is a center of academic excellence, character development, and holistic growth. We nurture young men to become leaders of integrity, equipped with knowledge and skills for a dynamic world."
+                };
+                saveCoverSettings(defaults);
+                closeModal();
+                if (currentRole === 'admin') renderAdminDashboard();
+            });
+            document.getElementById('cancelCoverBtn').addEventListener('click', closeModal);
+            updatePreview();
+        }, 50);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  CAROUSEL IMAGES — UPDATED WITH REAL SCHOOL PHOTOS
+    // ═══════════════════════════════════════════════════════════════
+
+    let carouselImages = [];
+
+    function getDefaultCarouselImages() {
+        return [
+            {
+                id: 'c1',
+                label: '🏫 Nyangwa Boys High School Campus',
+                dataUrl: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1400&h=500&fit=crop&crop=center'
+            },
+            {
+                id: 'c2',
+                label: '📚 Students in Class',
+                dataUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&h=500&fit=crop&crop=center'
+            },
+            {
+                id: 'c3',
+                label: '🎓 Graduation Ceremony',
+                dataUrl: 'https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=1400&h=500&fit=crop&crop=center'
+            },
+            {
+                id: 'c4',
+                label: '⚽ Sports & Team Spirit',
+                dataUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1400&h=500&fit=crop&crop=center'
+            },
+            {
+                id: 'c5',
+                label: '🏆 Prize Giving Day',
+                dataUrl: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1400&h=500&fit=crop&crop=center'
+            }
+        ];
+    }
+
+    function loadCarouselImages() {
+        const saved = localStorage.getItem("nyangwa_carousel");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    carouselImages = parsed;
+                    return;
+                }
+            } catch (e) {}
+        }
+        carouselImages = getDefaultCarouselImages();
+        localStorage.setItem("nyangwa_carousel", JSON.stringify(carouselImages));
+    }
+
+    function saveCarouselImages() {
+        localStorage.setItem("nyangwa_carousel", JSON.stringify(carouselImages));
+    }
+
+    // ─── RENDER CAROUSEL ───────────────────────────────────────────
+    let carouselIndex = 0;
+    let carouselInterval = null;
+
+    function renderCarousel() {
+        const container = document.getElementById('carouselContainer');
+        const indicators = document.getElementById('carouselIndicators');
+        if (!container) return;
+
+        // Clear container
+        container.innerHTML = '';
+
+        // If no images, show a fallback
+        if (carouselImages.length === 0) {
+            container.innerHTML = `<div style="position:absolute;top:0;left:0;width:100%;height:100%;background:#0d1b2a;display:flex;align-items:center;justify-content:center;color:#fff;font-size:2rem;">Nyangwa Boys High School</div>`;
+            return;
+        }
+
+        // Create slides
+        carouselImages.forEach((img, idx) => {
+            const slide = document.createElement('div');
+            slide.className = `carousel-slide ${idx === 0 ? 'active' : ''}`;
+            slide.style.backgroundImage = `url('${img.dataUrl}')`;
+            slide.dataset.index = idx;
+
+            // Caption
+            const caption = document.createElement('div');
+            caption.className = 'slide-caption';
+            caption.textContent = img.label || `Slide ${idx + 1}`;
+            slide.appendChild(caption);
+
+            container.appendChild(slide);
+        });
+
+        // Create indicators
+        indicators.innerHTML = '';
+        carouselImages.forEach((_, idx) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+            dot.dataset.index = idx;
+            dot.addEventListener('click', () => goToCarouselSlide(idx));
+            indicators.appendChild(dot);
+        });
+
+        // Start auto-play
+        startCarousel();
+    }
+
+    function goToCarouselSlide(index) {
+        const slides = document.querySelectorAll('#carouselContainer .carousel-slide');
+        const dots = document.querySelectorAll('#carouselIndicators .dot');
+        if (!slides.length) return;
+
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+
+        const idx = ((index % slides.length) + slides.length) % slides.length;
+        slides[idx].classList.add('active');
+        dots[idx].classList.add('active');
+        carouselIndex = idx;
+    }
+
+    function nextCarouselSlide() {
+        const total = carouselImages.length;
+        if (total === 0) return;
+        goToCarouselSlide(carouselIndex + 1);
+    }
+
+    function startCarousel() {
+        if (carouselInterval) clearInterval(carouselInterval);
+        carouselInterval = setInterval(nextCarouselSlide, 5000);
+    }
+
+    function stopCarousel() {
+        if (carouselInterval) {
+            clearInterval(carouselInterval);
+            carouselInterval = null;
+        }
+    }
+
+    // ─── ADMIN CAROUSEL MANAGER ──────────────────────────────────
+    function renderAdminCarouselManager() {
+        const html = `
+            <div class="card">
+              <h3><i class="fas fa-slideshare" style="color:#2980b9;"></i> Manage Carousel Slides</h3>
+              <p style="color:#6e897f; font-size:0.85rem;">These images appear as the full‑screen background carousel on the cover page.</p>
+              <div style="margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="adminAddCarouselBtn" class="btn-sm primary" style="background:#2980b9;"><i class="fas fa-plus"></i> Add Slide</button>
+                <button id="adminResetCarouselBtn" class="btn-sm outline"><i class="fas fa-undo"></i> Reset to Defaults</button>
+                <span style="font-size:0.8rem; color:#6e897f; display:flex; align-items:center;">
+                  <i class="fas fa-info-circle"></i> ${carouselImages.length} slides
+                </span>
+              </div>
+              <div id="adminCarouselGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px; margin-top:12px;">
+          `;
+        if (carouselImages.length === 0) {
+            html += `
+              <div style="grid-column:1/-1; text-align:center; padding:40px; color:#6e897f;">
+                <i class="fas fa-slideshare" style="font-size:3rem; display:block; margin-bottom:12px; color:#d1d9d4;"></i>
+                <p>No slides. Click "Add Slide" to upload.</p>
+              </div>
+            `;
+        } else {
+            carouselImages.forEach((img, idx) => {
+                html += `
+                <div style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e5ece8; position:relative;">
+                  <div style="width:100%; height:140px; background-image:url('${img.dataUrl}'); background-size:cover; background-position:center; background-color:#1b263b;"></div>
+                  <div style="padding:8px 12px;">
+                    <div style="font-weight:600; color:#1b263b; font-size:0.85rem;">${img.label || 'Slide ' + (idx+1)}</div>
+                    <div style="font-size:0.65rem; color:#6e897f;">#${idx + 1}</div>
+                  </div>
+                  <button class="admin-del-carousel-btn" data-id="${img.id}" style="position:absolute; top:6px; right:6px; background:rgba(192,57,43,0.85); border:none; color:#fff; width:30px; height:30px; border-radius:50%; cursor:pointer; transition:0.2s; font-size:0.75rem; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              `;
+            });
+        }
+        html += `</div></div>`;
+        mainContent.innerHTML = html;
+
+        document.getElementById('adminAddCarouselBtn')?.addEventListener('click', showAddCarouselModal);
+        document.getElementById('adminResetCarouselBtn')?.addEventListener('click', () => {
+            if (confirm('Reset carousel to default images? This will remove all custom slides.')) {
+                carouselImages = getDefaultCarouselImages();
+                saveCarouselImages();
+                renderAdminCarouselManager();
+                renderCarousel();
+            }
+        });
+
+        document.querySelectorAll('.admin-del-carousel-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (carouselImages.length <= 1) {
+                    alert('Cannot delete the last slide. Add a new one first.');
+                    return;
+                }
+                if (confirm('Delete this slide from the carousel?')) {
+                    carouselImages = carouselImages.filter(img => img.id !== id);
+                    saveCarouselImages();
+                    renderAdminCarouselManager();
+                    renderCarousel();
+                }
+            });
+        });
+    }
+
+    function showAddCarouselModal() {
+        let uploadedDataUrl = null;
+        const html = `
+            <h3>🖼️ Add Carousel Slide</h3>
+            <p style="color:#6e897f; font-size:0.9rem;">Upload an image to appear as a full‑screen background on the cover page carousel.</p>
+            <label>Image</label>
+            <div class="image-upload-area" id="carouselUploadArea">
+              <input type="file" id="carouselImageInput" accept="image/*" />
+              <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+              <span class="upload-text">Click to upload an image (JPG, PNG, SVG)</span>
+            </div>
+            <img id="carouselImagePreview" class="image-upload-preview" style="display:none;" alt="Preview" />
+            <label>Label (optional)</label>
+            <input id="carouselLabel" placeholder="e.g., Graduation Day" />
+            <div class="modal-actions">
+              <button id="saveCarouselBtn" class="btn-sm primary">Add to Carousel</button>
+              <button id="cancelCarouselBtn" class="btn-sm outline">Cancel</button>
+            </div>
+          `;
+        showModal('Add Carousel Slide', html, null);
+        setTimeout(() => {
+            const fileInput = document.getElementById('carouselImageInput');
+            const preview = document.getElementById('carouselImagePreview');
+            const uploadArea = document.getElementById('carouselUploadArea');
+
+            fileInput?.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        uploadedDataUrl = ev.target.result;
+                        preview.src = ev.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            uploadArea?.addEventListener('click', () => fileInput?.click());
+
+            document.getElementById('saveCarouselBtn')?.addEventListener('click', () => {
+                const label = document.getElementById('carouselLabel').value.trim() || 'Slide ' + (carouselImages.length + 1);
+                if (!uploadedDataUrl) { alert('Please upload an image.'); return; }
+                carouselImages.push({
+                    id: 'c' + Date.now().toString(36) + Math.random().toString(36).substring(2, 5),
+                    label: label,
+                    dataUrl: uploadedDataUrl
+                });
+                saveCarouselImages();
+                closeModal();
+                renderAdminCarouselManager();
+                renderCarousel();
+            });
+            document.getElementById('cancelCarouselBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  GALLERY IMAGES
+    // ═══════════════════════════════════════════════════════════════
+
+    let galleryImages = [];
+
+    function getDefaultGalleryImages() {
+        return [
+            { id: 'g1', caption: 'Graduation Day 2025', date: '2025-12-10', dataUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231b263b'/%3E%3Ccircle cx='200' cy='130' r='70' fill='%232980b9' opacity='0.2'/%3E%3Ctext x='200' y='120' font-size='64' text-anchor='middle' fill='%23f1c40f'%3E🎓%3C/text%3E%3Ctext x='200' y='180' font-size='22' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3EGraduation%3C/text%3E%3Ctext x='200' y='210' font-size='14' text-anchor='middle' fill='%2390b4d1'%3EClass of 2025%3C/text%3E%3C/svg%3E" },
+            { id: 'g2', caption: 'Football Team Champions', date: '2025-11-20', dataUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231b263b'/%3E%3Ccircle cx='200' cy='120' r='60' fill='%232980b9' opacity='0.15'/%3E%3Ctext x='200' y='120' font-size='64' text-anchor='middle' fill='%23ffffff'%3E⚽%3C/text%3E%3Ctext x='200' y='190' font-size='22' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3EFootball Champions%3C/text%3E%3Ctext x='200' y='220' font-size='14' text-anchor='middle' fill='%2390b4d1'%3EInter-School Tournament%3C/text%3E%3C/svg%3E" },
+            { id: 'g3', caption: 'Science Fair 2025', date: '2025-09-05', dataUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231b263b'/%3E%3Ctext x='200' y='120' font-size='64' text-anchor='middle' fill='%23f1c40f'%3E🔬%3C/text%3E%3Ctext x='200' y='190' font-size='22' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3EScience Fair%3C/text%3E%3Ctext x='200' y='220' font-size='14' text-anchor='middle' fill='%2390b4d1'%3EInnovation &amp; Discovery%3C/text%3E%3C/svg%3E" },
+            { id: 'g4', caption: 'Music & Drama Festival', date: '2025-07-15', dataUrl: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231b263b'/%3E%3Ctext x='200' y='120' font-size='64' text-anchor='middle' fill='%23e74c3c'%3E🎭%3C/text%3E%3Ctext x='200' y='190' font-size='22' text-anchor='middle' fill='%23ffffff' font-family='sans-serif'%3EMusic &amp; Drama%3C/text%3E%3Ctext x='200' y='220' font-size='14' text-anchor='middle' fill='%2390b4d1'%3ECelebrating Talent%3C/text%3E%3C/svg%3E" }
+        ];
+    }
+
+    function loadGalleryImages() {
+        const saved = localStorage.getItem("nyangwa_gallery");
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    galleryImages = parsed;
+                    return;
+                }
+            } catch (e) {}
+        }
+        galleryImages = getDefaultGalleryImages();
+        localStorage.setItem("nyangwa_gallery", JSON.stringify(galleryImages));
+    }
+
+    function saveGalleryImages() {
+        localStorage.setItem("nyangwa_gallery", JSON.stringify(galleryImages));
+    }
+
+    function generateGalleryId() {
+        return 'g' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6);
+    }
+
+    function renderCoverGallery() {
+        const grid = document.getElementById('coverGalleryGrid');
+        if (!grid) return;
+        const isAdmin = currentRole === 'admin';
+        if (galleryImages.length === 0) {
+            grid.innerHTML = `
+              <div class="gallery-empty">
+                <i class="fas fa-images"></i>
+                <p>No photos in the gallery yet. ${isAdmin ? 'Click "Add Image" to upload.' : 'Check back soon!'}</p>
+              </div>
+            `;
+            return;
+        }
+        let html = '';
+        const sorted = [...galleryImages].sort((a, b) => new Date(b.date) - new Date(a.date));
+        sorted.forEach(img => {
+            const displayDate = img.date ? new Date(img.date).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' }) : 'No date';
+            html += `
+              <div class="gallery-item" data-id="${img.id}">
+                <img src="${img.dataUrl}" alt="${img.caption}" loading="lazy" />
+                <div class="gallery-info">
+                  <div class="caption">${img.caption}</div>
+                  <div class="date"><i class="far fa-calendar-alt"></i> ${displayDate}</div>
+                </div>
+                ${isAdmin ? `
+                  <div class="gallery-actions">
+                    <button class="delete-gallery-btn" data-id="${img.id}" title="Delete image"><i class="fas fa-trash"></i></button>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+        });
+        grid.innerHTML = html;
+        if (isAdmin) {
+            document.querySelectorAll('.delete-gallery-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = this.dataset.id;
+                    if (confirm('Delete this image from the gallery?')) {
+                        galleryImages = galleryImages.filter(img => img.id !== id);
+                        saveGalleryImages();
+                        renderCoverGallery();
+                        if (currentRole === 'admin' && document.getElementById('adminGalleryView')) {
+                            renderAdminGalleryView();
+                        }
+                    }
+                });
+            });
+        }
+        const adminBar = document.getElementById('galleryAdminBar');
+        if (adminBar) {
+            adminBar.style.display = isAdmin ? 'flex' : 'none';
+        }
+    }
+
+    function showAddGalleryImageModal() {
+        let uploadedDataUrl = null;
+        const html = `
+            <h3>📸 Add Gallery Image</h3>
+            <p style="color:#6e897f; font-size:0.9rem;">Upload an image to the school gallery.</p>
+            <label>Image</label>
+            <div class="image-upload-area" id="galleryUploadArea">
+              <input type="file" id="galleryImageInput" accept="image/*" />
+              <span class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></span>
+              <span class="upload-text">Click to upload an image (JPG, PNG, SVG)</span>
+            </div>
+            <img id="galleryImagePreview" class="image-upload-preview" style="display:none;" alt="Preview" />
+            <label>Caption</label>
+            <input id="galleryCaption" placeholder="e.g., Graduation Day 2025" />
+            <label>Date</label>
+            <input type="date" id="galleryDate" value="${new Date().toISOString().slice(0,10)}" />
+            <div class="modal-actions">
+              <button id="saveGalleryImageBtn" class="btn-sm primary">Add to Gallery</button>
+              <button id="cancelGalleryImageBtn" class="btn-sm outline">Cancel</button>
+            </div>
+          `;
+        showModal('Add Gallery Image', html, null);
+        setTimeout(() => {
+            const fileInput = document.getElementById('galleryImageInput');
+            const preview = document.getElementById('galleryImagePreview');
+            const uploadArea = document.getElementById('galleryUploadArea');
+            fileInput?.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        uploadedDataUrl = ev.target.result;
+                        preview.src = ev.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            uploadArea?.addEventListener('click', () => fileInput?.click());
+            document.getElementById('saveGalleryImageBtn')?.addEventListener('click', () => {
+                const caption = document.getElementById('galleryCaption').value.trim();
+                const date = document.getElementById('galleryDate').value;
+                if (!caption) { alert('Please enter a caption.'); return; }
+                if (!uploadedDataUrl) { alert('Please upload an image.'); return; }
+                if (!date) { alert('Please select a date.'); return; }
+                galleryImages.push({
+                    id: generateGalleryId(),
+                    caption: caption,
+                    date: date,
+                    dataUrl: uploadedDataUrl
+                });
+                saveGalleryImages();
+                closeModal();
+                renderCoverGallery();
+                if (currentRole === 'admin' && document.getElementById('adminGalleryView')) {
+                    renderAdminGalleryView();
+                }
+            });
+            document.getElementById('cancelGalleryImageBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    function renderAdminGalleryView() {
+        const container = document.getElementById('mainContent');
+        if (!container) return;
+        let html = `
+            <div class="card">
+              <h3><i class="fas fa-images" style="color:#2980b9;"></i> Manage Gallery</h3>
+              <p style="color:#6e897f; font-size:0.85rem;">Add or remove images from the school gallery.</p>
+              <div style="margin:16px 0; display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="adminAddGalleryBtn" class="btn-sm primary" style="background:#2980b9;"><i class="fas fa-plus"></i> Add Image</button>
+                <button id="adminRefreshGalleryBtn" class="btn-sm outline"><i class="fas fa-sync-alt"></i> Refresh</button>
+                <span style="font-size:0.8rem; color:#6e897f; display:flex; align-items:center;">
+                  <i class="fas fa-info-circle"></i> ${galleryImages.length} images in gallery
+                </span>
+              </div>
+              <div id="adminGalleryGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:20px; margin-top:12px;">
+          `;
+        if (galleryImages.length === 0) {
+            html += `
+              <div style="grid-column:1/-1; text-align:center; padding:40px; color:#6e897f;">
+                <i class="fas fa-images" style="font-size:3rem; display:block; margin-bottom:12px; color:#d1d9d4;"></i>
+                <p>No images in the gallery. Click "Add Image" to upload.</p>
+              </div>
+            `;
+        } else {
+            const sorted = [...galleryImages].sort((a, b) => new Date(b.date) - new Date(a.date));
+            sorted.forEach(img => {
+                const displayDate = img.date ? new Date(img.date).toLocaleDateString('en-KE') : 'No date';
+                html += `
+                <div style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e5ece8; position:relative;">
+                  <img src="${img.dataUrl}" alt="${img.caption}" style="width:100%; height:180px; object-fit:cover; display:block; background:#f0f5f2;" />
+                  <div style="padding:10px 14px;">
+                    <div style="font-weight:600; color:#1b263b; font-size:0.9rem;">${img.caption}</div>
+                    <div style="font-size:0.7rem; color:#6e897f;">${displayDate}</div>
+                  </div>
+                  <button class="admin-del-gallery-btn" data-id="${img.id}" style="position:absolute; top:8px; right:8px; background:rgba(192,57,43,0.85); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:0.2s; font-size:0.8rem; display:flex; align-items:center; justify-content:center;">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              `;
+            });
+        }
+        html += `</div></div>`;
+        container.innerHTML = html;
+        document.getElementById('adminAddGalleryBtn')?.addEventListener('click', showAddGalleryImageModal);
+        document.getElementById('adminRefreshGalleryBtn')?.addEventListener('click', renderAdminGalleryView);
+        document.querySelectorAll('.admin-del-gallery-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const id = this.dataset.id;
+                if (confirm('Delete this image from the gallery?')) {
+                    galleryImages = galleryImages.filter(img => img.id !== id);
+                    saveGalleryImages();
+                    renderAdminGalleryView();
+                    renderCoverGallery();
+                }
+            });
+        });
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  ADMIN CREDENTIALS
+    // ═══════════════════════════════════════════════════════════════
+
+    let adminCredentials = { username: "admin", password: "admin123" };
+
+    function loadAdminCredentials() {
+        const saved = localStorage.getItem("nyangwa_admin_creds");
+        if (saved) {
+            try { const parsed = JSON.parse(saved); if (parsed.username && parsed.password) adminCredentials = parsed; } catch (e) {}
+        } else localStorage.setItem("nyangwa_admin_creds", JSON.stringify(adminCredentials));
+    }
+
+    function verifyAdminLogin(username, password) {
+        return username === adminCredentials.username && password === adminCredentials.password;
+    }
+
+    function changeAdminPassword(current, newPwd) {
+        if (current !== adminCredentials.password) return { success: false, message: "Current password incorrect." };
+        if (newPwd.length < 4) return { success: false, message: "Password min 4 chars." };
+        adminCredentials.password = newPwd;
+        localStorage.setItem("nyangwa_admin_creds", JSON.stringify(adminCredentials));
+        return { success: true, message: "Password changed! Login again." };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  SCHOOL PROFILE
+    // ═══════════════════════════════════════════════════════════════
+
+    let schoolProfile = {
+        name: "Nyangwa Boys High School",
+        motto: "Knowledge & Integrity",
+        phone: "+254 701762213",
+        email: "info@nyangwaboys.sc.ke",
+        address: "Nyangwa, Embu County, Kenya",
+        logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232980b9'/%3E%3Ctext x='50' y='67' font-size='40' text-anchor='middle' fill='white' font-weight='bold'%3ENG%3C/text%3E%3C/svg%3E"
+    };
+
+    function loadSchoolProfile() {
+        const saved = localStorage.getItem("nyangwa_school_profile");
+        if (saved) {
+            try { const parsed = JSON.parse(saved); schoolProfile = { ...schoolProfile, ...parsed }; } catch (e) {}
+        }
+        updateSchoolProfileUI();
+    }
+
+    function updateSchoolProfileUI() {
+        const sidebarLogo = document.getElementById("sidebarLogo");
+        if (sidebarLogo) sidebarLogo.src = schoolProfile.logo;
+        const schoolNameEl = document.getElementById("schoolNameDisplay");
+        if (schoolNameEl) schoolNameEl.innerText = schoolProfile.name;
+        const mottoEl = document.getElementById("schoolMottoDisplay");
+        if (mottoEl) mottoEl.innerText = schoolProfile.motto;
+        const loginLogo = document.getElementById("loginLogoImg");
+        if (loginLogo) loginLogo.src = schoolProfile.logo;
+        const loginSchoolName = document.getElementById("loginSchoolName");
+        if (loginSchoolName) loginSchoolName.innerHTML = schoolProfile.name.replace(/ /g, '<br>');
+        const loginMotto = document.getElementById("loginSchoolMotto");
+        if (loginMotto) loginMotto.innerText = schoolProfile.motto;
+        const coverLogo = document.getElementById("coverLogoImg");
+        if (coverLogo) coverLogo.src = schoolProfile.logo;
+        applyCoverSettings();
+    }
+
+    function saveSchoolProfile(profile) {
+        schoolProfile = { ...schoolProfile, ...profile };
+        localStorage.setItem("nyangwa_school_profile", JSON.stringify(schoolProfile));
+        updateSchoolProfileUI();
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  MASTER DATA
+    // ═══════════════════════════════════════════════════════════════
+
+    let allSubjects = [
+        { code: "MATH401", name: "Mathematics", department: "Sciences" },
+        { code: "ENG402", name: "English", department: "Languages" },
+        { code: "KIS404", name: "Kiswahili", department: "Languages" },
+        { code: "CHEM406", name: "Chemistry", department: "Sciences" },
+        { code: "BIO405", name: "Biology", department: "Sciences" },
+        { code: "PHY407", name: "Physics", department: "Sciences" },
+        { code: "HIST408", name: "History", department: "Humanities" },
+        { code: "GEO409", name: "Geography", department: "Humanities" },
+        { code: "BUS411", name: "Business Studies", department: "Business" },
+        { code: "COMP412", name: "Computer Science", department: "Technology" },
+        { code: "AGR413", name: "Agriculture", department: "Applied" },
+        { code: "FREN415", name: "French", department: "Languages" },
+        { code: "MUS417", name: "Music", department: "Creative" }
+    ];
+
+    let students = [
+        {
+            id: "NY9028",
+            name: "Ali Osman",
+            form: 2,
+            feeBalance: 1500,
+            progress: 89,
+            assignedSubjects: ["MATH401", "ENG402", "KIS404", "CHEM406", "BIO405", "PHY407", "COMP412", "BUS411"],
+            transactions: [
+                { date: "2026-01-15", desc: "Term 1 Fees", amount: -15000, balanceAfter: 1500 },
+                { date: "2026-01-05", desc: "Deposit", amount: -20000, balanceAfter: 46500 }
+            ],
+            grades: [
+                { form: 2, term: "Term 1", subjectCode: "MATH401", score: 78, grade: "B+", points: 10 },
+                { form: 2, term: "Term 1", subjectCode: "ENG402", score: 85, grade: "A-", points: 11 },
+                { form: 2, term: "Term 1", subjectCode: "KIS404", score: 88, grade: "A-", points: 11 },
+                { form: 2, term: "Term 1", subjectCode: "CHEM406", score: 71, grade: "B", points: 9 },
+                { form: 2, term: "Term 1", subjectCode: "BIO405", score: 64, grade: "C+", points: 7 },
+                { form: 2, term: "Term 1", subjectCode: "PHY407", score: 82, grade: "A-", points: 11 },
+                { form: 2, term: "Term 1", subjectCode: "COMP412", score: 91, grade: "A", points: 12 },
+                { form: 2, term: "Term 1", subjectCode: "BUS411", score: 74, grade: "B", points: 9 }
+            ]
+        },
+        {
+            id: "NY9027",
+            name: "Mulinge George Mbithi",
+            form: 1,
+            feeBalance: 2500,
+            progress: 75,
+            assignedSubjects: allSubjects.map(s => s.code),
+            transactions: [
+                { date: "2026-02-01", desc: "Registration", amount: -15000, balanceAfter: 2500 }
+            ],
+            grades: [
+                { form: 1, term: "Term 1", subjectCode: "MATH401", score: 82, grade: "A-", points: 11 },
+                { form: 1, term: "Term 1", subjectCode: "ENG402", score: 79, grade: "B+", points: 10 },
+                { form: 1, term: "Term 1", subjectCode: "KIS404", score: 85, grade: "A-", points: 11 },
+                { form: 1, term: "Term 1", subjectCode: "CHEM406", score: 74, grade: "B", points: 9 },
+                { form: 1, term: "Term 1", subjectCode: "BIO405", score: 81, grade: "A-", points: 11 },
+                { form: 1, term: "Term 1", subjectCode: "PHY407", score: 76, grade: "B+", points: 10 },
+                { form: 1, term: "Term 1", subjectCode: "HIST408", score: 88, grade: "A-", points: 11 },
+                { form: 1, term: "Term 1", subjectCode: "GEO409", score: 72, grade: "B", points: 9 },
+                { form: 1, term: "Term 1", subjectCode: "BUS411", score: 68, grade: "B-", points: 8 },
+                { form: 1, term: "Term 1", subjectCode: "COMP412", score: 92, grade: "A", points: 12 },
+                { form: 1, term: "Term 1", subjectCode: "AGR413", score: 70, grade: "B", points: 9 },
+                { form: 1, term: "Term 1", subjectCode: "FREN415", score: 77, grade: "B+", points: 10 },
+                { form: 1, term: "Term 1", subjectCode: "MUS417", score: 85, grade: "A-", points: 11 }
+            ]
+        }
+    ];
+
+    let currentUser = null, currentRole = null;
+    const dashboardContainer = document.getElementById('dashboardContainer'),
+          signinBtn = document.getElementById('signinBtn'),
+          logoutBtn = document.getElementById('logoutBtn'),
+          mainContent = document.getElementById('mainContent'),
+          dynamicNav = document.getElementById('dynamicNav');
+
+    // ─── MODAL HELPERS ──────────────────────────────────────────────
+
+    function showModal(title, innerHtml, onClose = null) {
+        const modal = document.getElementById('globalModal');
+        document.getElementById('modalInner').innerHTML = `<h3>${title}</h3>${innerHtml}<div class="modal-actions"><button id="modalCloseBtn" class="btn-sm outline">Close</button></div>`;
+        modal.classList.add('active');
+        document.getElementById('modalCloseBtn').onclick = () => {
+            modal.classList.remove('active');
+            if (onClose) onClose();
+        };
+        modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('active'); };
+    }
+
+    function closeModal() {
+        document.getElementById('globalModal').classList.remove('active');
+    }
+
+    // ─── STUDENT HELPERS ────────────────────────────────────────────
+
+    function getGradesForForm(student, form) {
+        if (!student.grades) return [];
+        return student.grades.filter(g => g.form === form);
+    }
+
+    function computeFormPointsAndAverage(student, form) {
+        const grades = getGradesForForm(student, form);
+        if (grades.length === 0) return { totalPoints: 0, avgPoints: 0, subjectCount: 0 };
+        let totalPoints = 0;
+        for (let g of grades) {
+            if (g.points) totalPoints += g.points;
+            else totalPoints += getPointsFromGrade(g.grade, form);
+        }
+        const avg = totalPoints / grades.length;
+        return { totalPoints, avgPoints: avg.toFixed(1), subjectCount: grades.length };
+    }
+
+    function getMeanGradeFromAvg(avgPoints, form) {
+        const system = getGradingSystemForForm(form);
+        if (!system || !system.grades) return "N/A";
+        let best = system.grades[0];
+        for (let g of system.grades) {
+            if (Math.abs(g.points - avgPoints) < Math.abs(best.points - avgPoints)) {
+                best = g;
+            }
+        }
+        return best.grade;
+    }
+
+    // ─── M-PESA PAYMENT ENGINE ──────────────────────────────────────
+
+    function initiateMpesaPayment(student, amount, phoneNumber) {
+        return new Promise((resolve, reject) => {
+            let cleaned = phoneNumber.replace(/\s/g, '');
+            const kenyanRegex = /^(254|0)?(7|1)\d{8}$/;
+            if (!kenyanRegex.test(cleaned)) {
+                reject({ code: 'INVALID_PHONE', message: 'Please enter a valid Safaricom number (e.g., 0712345678 or 254712345678).' });
+                return;
+            }
+            if (amount <= 0) {
+                reject({ code: 'INVALID_AMOUNT', message: 'Amount must be greater than 0.' });
+                return;
+            }
+            if (amount > 150000) {
+                reject({ code: 'AMOUNT_TOO_HIGH', message: 'Maximum M-Pesa transaction is KES 150,000.' });
+                return;
+            }
+            if (amount > student.feeBalance) {
+                reject({ code: 'INSUFFICIENT_BALANCE', message: `Amount exceeds your current balance of KES ${student.feeBalance.toLocaleString()}.` });
+                return;
+            }
+            let msisdn = cleaned;
+            if (msisdn.startsWith('0')) msisdn = '254' + msisdn.slice(1);
+            if (!msisdn.startsWith('254')) msisdn = '254' + msisdn;
+            const transactionId = 'MP' + Date.now().toString().slice(-8) + Math.floor(Math.random() * 1000);
+            const reference = 'NY' + Date.now().toString().slice(-6);
+            const delay = 2000 + Math.random() * 3000;
+            const timeout = setTimeout(() => {
+                const success = Math.random() < 0.92;
+                if (success) {
+                    resolve({
+                        success: true,
+                        transactionId: transactionId,
+                        reference: reference,
+                        msisdn: msisdn,
+                        amount: amount,
+                        message: 'Payment received successfully.',
+                        balanceAfter: student.feeBalance - amount
+                    });
+                } else {
+                    reject({ code: 'STK_FAILED', message: 'M-Pesa STK Push failed. Please try again or check your balance.' });
+                }
+            }, delay);
+            window._mpesaTimeout = timeout;
+        });
+    }
+
+    // ─── STUDENT DASHBOARD ──────────────────────────────────────────
+
+    let currentSelectedForm = 1;
+
+    function renderStudentDashboard() {
+        const student = currentUser.data;
+        const balance = student.feeBalance;
+        const assignedSubjects = (student.assignedSubjects || []).map(code => allSubjects.find(s => s.code === code)).filter(Boolean);
+        let subjectsHtml = `<table><thead><tr><th>Subject Name</th><th>Code</th><th>Department</th></tr></thead><tbody>`;
+        assignedSubjects.forEach(sub => {
+            subjectsHtml += `<tr><td>📘 ${sub.name}</td><td>${sub.code}</td><td>${sub.department}</td></tr>`;
+        });
+        subjectsHtml += `</tbody></table>`;
+
+        const formGrades = getGradesForForm(student, currentSelectedForm);
+        const pointsData = computeFormPointsAndAverage(student, currentSelectedForm);
+        const meanGrade = getMeanGradeFromAvg(parseFloat(pointsData.avgPoints), currentSelectedForm);
+
+        let gradesHtml = `<table><thead><tr><th>Subject</th><th>Term</th><th>Score</th><th>Grade</th><th>Points</th><th>Remarks</th></tr></thead><tbody>`;
+        if (formGrades.length > 0) {
+            formGrades.forEach(g => {
+                const subj = allSubjects.find(s => s.code === g.subjectCode) || { name: g.subjectCode };
+                const pts = g.points || getPointsFromGrade(g.grade, currentSelectedForm);
+                gradesHtml += `<tr><td>${subj.name}</td><td>${g.term}</td><td>${g.score}</td><td><strong>${g.grade}</strong></td><td><span class="points-badge">${pts}</span></td><td>${g.score>=70?'🌟 Excellent':g.score>=50?'📈 Average':'📉 Needs improvement'}</td></tr>`;
+            });
+        } else {
+            gradesHtml += `<tr><td colspan="6">No grades for Form ${currentSelectedForm}.</td></tr>`;
+        }
+        gradesHtml += `</tbody></table>`;
+
+        const systemName = getGradingSystemName(currentSelectedForm);
+
+        let galleryPreviewHtml = '';
+        if (galleryImages.length > 0) {
+            const latest = [...galleryImages].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+            galleryPreviewHtml = `
+              <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+                  <h3><i class="fas fa-images" style="color:#2980b9;"></i> Latest Gallery</h3>
+                  <button id="viewAllGalleryBtn" class="btn-sm outline" style="font-size:0.8rem;">View All</button>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:16px; margin-top:12px;">
+            `;
+            latest.forEach(img => {
+                galleryPreviewHtml += `
+                <div style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e5ece8; cursor:pointer;" class="gallery-preview-item" data-id="${img.id}">
+                  <img src="${img.dataUrl}" alt="${img.caption}" style="width:100%; height:130px; object-fit:cover; display:block;" />
+                  <div style="padding:8px 12px;">
+                    <div style="font-size:0.85rem; font-weight:600; color:#1b263b;">${img.caption}</div>
+                    <span style="font-size:0.6rem; color:#6e897f;">${img.date ? new Date(img.date).toLocaleDateString('en-KE') : ''}</span>
+                  </div>
+                </div>
+              `;
+            });
+            galleryPreviewHtml += `</div></div>`;
+        }
+
+        mainContent.innerHTML = `
+            <div class="card">
+              <h3>👋 Welcome, ${student.name}</h3>
+              <p>ID: ${student.id} &nbsp;|&nbsp; Form: ${student.form} &nbsp;|&nbsp; Progress: ${student.progress}%</p>
+              <div style="background:#e2eae6; border-radius:40px; height:8px; width:100%;">
+                <div style="width:${student.progress}%; background:#2980b9; height:8px; border-radius:40px;"></div>
+              </div>
+            </div>
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center;">
+                <h3>🎓 Results per Form</h3>
+                <div class="form-selector">
+                  <span><i class="fas fa-layer-group"></i> Select Form:</span>
+                  <select id="formSelect">
+                    <option value="1" ${currentSelectedForm===1?'selected':''}>Form 1</option>
+                    <option value="2" ${currentSelectedForm===2?'selected':''}>Form 2</option>
+                    <option value="3" ${currentSelectedForm===3?'selected':''}>Form 3</option>
+                    <option value="4" ${currentSelectedForm===4?'selected':''}>Form 4</option>
+                  </select>
+                </div>
+              </div>
+              <p style="font-size:0.8rem; color:#6e897f; margin-top:4px;"><i class="fas fa-info-circle"></i> Using: <strong>${systemName}</strong></p>
+            </div>
+            <div class="card">
+              <h3>📊 Performance Summary (Form ${currentSelectedForm})</h3>
+              <p><strong>Total Points:</strong> ${pointsData.totalPoints} &nbsp;|&nbsp; <strong>Average Points:</strong> ${pointsData.avgPoints} &nbsp;|&nbsp; <strong>Mean Grade:</strong> ${meanGrade}</p>
+              <p style="font-size:0.75rem; color:#6e897f;"><em>Grading system: ${systemName}</em></p>
+            </div>
+            <div class="card">
+              <h3>📖 Subject Grades &amp; Points (Form ${currentSelectedForm})</h3>
+              ${gradesHtml}
+            </div>
+            <div class="card">
+              <h3>💰 Fee Balance</h3>
+              <div class="fee-balance">KES ${balance.toLocaleString()}</div>
+              <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
+                <button id="viewStatementBtn" class="btn-sm"><i class="fas fa-receipt"></i> Statement</button>
+                <button id="payNowBtn" class="btn-sm" style="background:#00a859; font-weight:700;"><i class="fas fa-credit-card"></i> Pay with M-Pesa</button>
+              </div>
+              <p style="font-size:0.7rem; color:#6e897f; margin-top:8px;"><i class="fas fa-info-circle"></i> M-Pesa STK Push simulation.</p>
+            </div>
+            <div class="card">
+              <h3>📚 My Assigned Subjects</h3>
+              ${subjectsHtml}
+              <div class="info-badge"><i class="fas fa-user-check"></i> Subjects assigned by admin.</div>
+            </div>
+            ${galleryPreviewHtml}
+          `;
+        document.getElementById('formSelect')?.addEventListener('change', (e) => {
+            currentSelectedForm = parseInt(e.target.value);
+            renderStudentDashboard();
+        });
+        document.getElementById('viewStatementBtn')?.addEventListener('click', () => {
+            let stmtHtml = `<p><strong>Current Balance: KES ${student.feeBalance.toLocaleString()}</strong></p><h4>Transaction History</h4>`;
+            if (student.transactions?.length) {
+                stmtHtml += `<div>`;
+                student.transactions.slice().reverse().forEach(t => {
+                    const sign = t.amount < 0 ? '-' : '+';
+                    const absAmt = Math.abs(t.amount).toLocaleString();
+                    stmtHtml += `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; flex-wrap:wrap; gap:4px;">
+                        <span style="font-weight:500;">${t.date}</span>
+                        <span>${t.desc}</span>
+                        <span style="color:${t.amount<0?'#c0392b':'#1f8a6b'};">${sign} KES ${absAmt}</span>
+                        <span style="color:#6e897f;">Bal: KES ${t.balanceAfter.toLocaleString()}</span>
+                      </div>`;
+                });
+                stmtHtml += `</div>`;
+            } else {
+                stmtHtml += `<p>No transactions yet.</p>`;
+            }
+            showModal("Fee Statement", stmtHtml);
+        });
+        document.getElementById('payNowBtn')?.addEventListener('click', () => {
+            showMpesaPaymentModal(student);
+        });
+        document.getElementById('viewAllGalleryBtn')?.addEventListener('click', () => {
+            const gallerySection = document.getElementById('gallerySection');
+            if (gallerySection) {
+                gallerySection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        document.querySelectorAll('.gallery-preview-item').forEach(el => {
+            el.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const img = galleryImages.find(i => i.id === id);
+                if (img) showGalleryDetailModal(img);
+            });
+        });
+    }
+
+    function showGalleryDetailModal(img) {
+        const displayDate = img.date ? new Date(img.date).toLocaleDateString('en-KE', { year: 'numeric', month: 'long', day: 'numeric' }) : 'No date';
+        const html = `
+            <h3>📸 ${img.caption}</h3>
+            <img src="${img.dataUrl}" style="width:100%; max-height:450px; object-fit:cover; border-radius:16px; margin-bottom:16px; border:1px solid #e5ece8;" alt="${img.caption}" />
+            <div style="display:flex; gap:16px; font-size:0.8rem; color:#6e897f; flex-wrap:wrap;">
+              <span><i class="far fa-calendar-alt"></i> ${displayDate}</span>
+            </div>
+            <div class="modal-actions">
+              <button id="closeDetailBtn" class="btn-sm outline">Close</button>
+            </div>
+          `;
+        showModal('Gallery Image', html, null);
+        document.getElementById('closeDetailBtn')?.addEventListener('click', closeModal);
+    }
+
+    // ─── M-PESA PAYMENT MODAL ──────────────────────────────────────
+
+    function showMpesaPaymentModal(student) {
+        const html = `
+            <div class="mpesa-header" style="display:flex; align-items:center; gap:12px; background:#eaf7f0; padding:12px 16px; border-radius:20px; margin-bottom:16px;">
+              <i class="fas fa-phone-alt" style="font-size:1.8rem; color:#00a859;"></i>
+              <span style="font-weight:700; font-size:1.1rem; color:#1f4e3c;">Pay with M-Pesa (STK Push Simulation)</span>
+              <span style="margin-left:auto; background:#2980b9; padding:2px 14px; border-radius:30px; font-size:0.7rem; color:#fff;">Secure</span>
+            </div>
+            <div style="margin-bottom:16px;">
+              <p><strong>Student:</strong> ${student.name} (${student.id})</p>
+              <p><strong>Current Balance:</strong> KES ${student.feeBalance.toLocaleString()}</p>
+            </div>
+            <div id="mpesaPaymentForm">
+              <label>📱 M-Pesa Phone Number</label>
+              <div style="display:flex; align-items:center; gap:8px; background:#f5f8f6; border-radius:16px; padding:4px 4px 4px 16px; border:1px solid #d1d9d4;">
+                <span style="font-weight:600; color:#1f3a30; font-size:0.95rem;">+254</span>
+                <input type="tel" id="mpesaPhone" placeholder="712345678" value="712345678" style="border:none; background:transparent; padding:12px 8px; flex:1; font-size:1rem;" />
+              </div>
+              <p style="font-size:0.7rem; color:#6e897f; margin:4px 0 8px;">Enter the Safaricom number registered with M-Pesa.</p>
+              <label>💰 Amount (KES)</label>
+              <input type="number" id="mpesaAmount" placeholder="Enter amount" value="1000" min="1" step="1" style="width:100%; padding:12px 16px; border:1px solid #d1d9d4; border-radius:16px; font-size:1rem;" />
+              <div id="mpesaStatusArea" style="margin-top:16px;"></div>
+              <div class="modal-actions" id="mpesaActions">
+                <button id="mpesaPayBtn" class="btn-sm" style="flex:2; background:#00a859; font-size:1.05rem; padding:14px;">
+                  <i class="fas fa-bolt"></i> Request STK Push
+                </button>
+                <button id="mpesaCancelBtn" class="btn-sm outline">Cancel</button>
+              </div>
+            </div>
+            <div id="mpesaProcessing" style="display:none;">
+              <div style="text-align:center; padding:24px 0;">
+                <div style="width:56px; height:56px; border-radius:50%; border:4px solid #e0e8e4; border-top-color:#00a859; animation:spin 0.9s linear infinite; margin:0 auto 16px;"></div>
+                <p style="font-weight:600; font-size:1.1rem;">Waiting for M-Pesa confirmation...</p>
+                <p style="color:#6e897f;">Please check your phone and enter your PIN.</p>
+                <p style="font-size:0.75rem; color:#6e897f; margin-top:8px;">This may take a few seconds.</p>
+                <button id="mpesaCancelProcessingBtn" class="btn-sm outline" style="margin-top:16px;">Cancel</button>
+              </div>
+            </div>
+            <div id="mpesaResult" style="display:none;"></div>
+          `;
+        showModal("M-Pesa Payment", html, null);
+        setTimeout(() => {
+            const form = document.getElementById('mpesaPaymentForm');
+            const processing = document.getElementById('mpesaProcessing');
+            const result = document.getElementById('mpesaResult');
+            const statusArea = document.getElementById('mpesaStatusArea');
+            const payBtn = document.getElementById('mpesaPayBtn');
+            const cancelBtn = document.getElementById('mpesaCancelBtn');
+            const cancelProcBtn = document.getElementById('mpesaCancelProcessingBtn');
+            const phoneInput = document.getElementById('mpesaPhone');
+            const amountInput = document.getElementById('mpesaAmount');
+            const closeModalFn = () => {
+                if (window._mpesaTimeout) {
+                    clearTimeout(window._mpesaTimeout);
+                    window._mpesaTimeout = null;
+                }
+                closeModal();
+            };
+            cancelBtn?.addEventListener('click', closeModalFn);
+            cancelProcBtn?.addEventListener('click', closeModalFn);
+            payBtn?.addEventListener('click', () => {
+                const phone = phoneInput.value.trim();
+                const amount = parseFloat(amountInput.value);
+                if (!phone) {
+                    statusArea.innerHTML = `<div style="background:#fee; color:#a93226; padding:12px; border-radius:16px;">Please enter your M-Pesa phone number.</div>`;
+                    return;
+                }
+                if (isNaN(amount) || amount <= 0) {
+                    statusArea.innerHTML = `<div style="background:#fee; color:#a93226; padding:12px; border-radius:16px;">Please enter a valid amount.</div>`;
+                    return;
+                }
+                statusArea.innerHTML = '';
+                form.style.display = 'none';
+                processing.style.display = 'block';
+                result.style.display = 'none';
+                initiateMpesaPayment(student, amount, phone)
+                    .then(res => {
+                        processing.style.display = 'none';
+                        result.style.display = 'block';
+                        result.innerHTML = `
+                        <div style="text-align:center; padding:24px 0;">
+                          <div style="font-size:3.6rem; color:#00a859; animation:pop 0.4s ease;">✅</div>
+                          <p style="font-weight:700; font-size:1.2rem; color:#1f8a6b;">Payment Successful!</p>
+                          <p>KES ${amount.toLocaleString()} paid via M-Pesa.</p>
+                          <p><strong>New Balance:</strong> KES ${res.balanceAfter.toLocaleString()}</p>
+                          <p style="font-size:0.8rem; color:#6e897f; background:#f0f5f2; padding:4px 14px; border-radius:40px; display:inline-block; margin-top:6px;">Ref: ${res.reference} | TXN: ${res.transactionId}</p>
+                          <button id="mpesaDoneBtn" class="btn-sm" style="margin-top:16px; background:#1b263b;">
+                            <i class="fas fa-check"></i> Done
+                          </button>
+                        </div>
+                      `;
+                        document.getElementById('mpesaDoneBtn')?.addEventListener('click', () => {
+                            student.feeBalance = res.balanceAfter;
+                            if (!student.transactions) student.transactions = [];
+                            student.transactions.push({
+                                date: new Date().toISOString().slice(0, 10),
+                                desc: `M-Pesa Payment (${res.reference})`,
+                                amount: -amount,
+                                balanceAfter: res.balanceAfter
+                            });
+                            currentUser.data = student;
+                            closeModal();
+                            renderStudentDashboard();
+                        });
+                        const masterStudent = students.find(s => s.id === student.id);
+                        if (masterStudent) {
+                            masterStudent.feeBalance = res.balanceAfter;
+                            if (!masterStudent.transactions) masterStudent.transactions = [];
+                            masterStudent.transactions.push({
+                                date: new Date().toISOString().slice(0, 10),
+                                desc: `M-Pesa Payment (${res.reference})`,
+                                amount: -amount,
+                                balanceAfter: res.balanceAfter
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        processing.style.display = 'none';
+                        result.style.display = 'block';
+                        result.innerHTML = `
+                        <div style="text-align:center; padding:24px 0;">
+                          <div style="font-size:3.6rem; color:#c0392b;">❌</div>
+                          <p style="font-weight:700; font-size:1.1rem; color:#c0392b;">Payment Failed</p>
+                          <p>${err.message || 'Something went wrong. Please try again.'}</p>
+                          <button id="mpesaRetryBtn" class="btn-sm" style="margin-top:16px; background:#2980b9;">
+                            <i class="fas fa-redo"></i> Retry
+                          </button>
+                          <button id="mpesaFailCloseBtn" class="btn-sm outline" style="margin-top:8px;">Close</button>
+                        </div>
+                      `;
+                        document.getElementById('mpesaRetryBtn')?.addEventListener('click', () => {
+                            result.style.display = 'none';
+                            processing.style.display = 'none';
+                            form.style.display = 'block';
+                            statusArea.innerHTML = '';
+                        });
+                        document.getElementById('mpesaFailCloseBtn')?.addEventListener('click', closeModalFn);
+                    });
+            });
+            amountInput?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') payBtn?.click();
+            });
+            phoneInput?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') payBtn?.click();
+            });
+        }, 50);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    //  ADMIN DASHBOARD
+    // ═══════════════════════════════════════════════════════════════
+
+    function promoteAllStudents() {
+        let promoted = false;
+        for (let s of students) {
+            if (s.form < 4) { s.form++; promoted = true; }
+        }
+        if (promoted) {
+            alert("✅ All students promoted to next form! (Form 4 cannot go higher).");
+            renderManageStudents();
+            if (currentRole === 'admin') renderAdminDashboard();
+        } else {
+            alert("All students are already in Form 4. Cannot promote further.");
+        }
+    }
+
+    function showSchoolProfileEditor() {
+        const editHtml = `
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <label>School Logo</label>
+              <img id="logoPreview" style="width:100px; height:100px; object-fit:cover; border-radius:50%; margin:10px auto; display:block; border:2px solid #1b263b;" src="${schoolProfile.logo}" />
+              <input type="file" id="logoUpload" accept="image/*" />
+              <label>School Name</label>
+              <input id="editSchoolName" value="${schoolProfile.name.replace(/"/g, '&quot;')}" />
+              <label>Motto</label>
+              <input id="editMotto" value="${schoolProfile.motto.replace(/"/g, '&quot;')}" />
+              <label>Phone</label>
+              <input id="editPhone" value="${schoolProfile.phone}" />
+              <label>Email</label>
+              <input id="editEmail" value="${schoolProfile.email}" />
+              <label>Address</label>
+              <input id="editAddress" value="${schoolProfile.address}" />
+              <div class="modal-actions">
+                <button id="saveProfileBtn" class="btn-sm primary">Save</button>
+                <button id="cancelProfileBtn" class="btn-sm outline">Cancel</button>
+              </div>
+            </div>
+          `;
+        showModal("Edit School Profile", editHtml, null);
+        setTimeout(() => {
+            const fileInput = document.getElementById('logoUpload');
+            const preview = document.getElementById('logoPreview');
+            fileInput?.addEventListener('change', (e) => {
+                if (e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => { preview.src = ev.target.result; };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
+            document.getElementById('saveProfileBtn')?.addEventListener('click', () => {
+                let newLogo = schoolProfile.logo;
+                if (fileInput && fileInput.files.length) newLogo = preview.src;
+                saveSchoolProfile({
+                    name: document.getElementById('editSchoolName').value,
+                    motto: document.getElementById('editMotto').value,
+                    phone: document.getElementById('editPhone').value,
+                    email: document.getElementById('editEmail').value,
+                    address: document.getElementById('editAddress').value,
+                    logo: newLogo
+                });
+                closeModal();
+                if (currentRole === 'admin') renderAdminDashboard();
+            });
+            document.getElementById('cancelProfileBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    function showChangePasswordModal() {
+        const html = `
+            <div>
+              <label>Current Password</label>
+              <input type="password" id="currentPwd" />
+              <label>New Password</label>
+              <input type="password" id="newPwd" />
+              <label>Confirm</label>
+              <input type="password" id="confirmPwd" />
+              <div id="pwdFeedback" style="color:#c0392b; margin-top:8px;"></div>
+              <div class="modal-actions">
+                <button id="savePwdBtn" class="btn-sm primary">Change</button>
+                <button id="cancelPwdBtn" class="btn-sm outline">Cancel</button>
+              </div>
+            </div>
+          `;
+        showModal("Change Admin Password", html, null);
+        setTimeout(() => {
+            document.getElementById('savePwdBtn')?.addEventListener('click', () => {
+                const curr = document.getElementById('currentPwd').value;
+                const newp = document.getElementById('newPwd').value;
+                const conf = document.getElementById('confirmPwd').value;
+                if (newp !== conf) {
+                    document.getElementById('pwdFeedback').innerText = "Passwords do not match.";
+                    return;
+                }
+                const res = changeAdminPassword(curr, newp);
+                if (res.success) {
+                    alert(res.message);
+                    closeModal();
+                    logout();
+                } else {
+                    document.getElementById('pwdFeedback').innerText = res.message;
+                }
+            });
+            document.getElementById('cancelPwdBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    function renderAdminDashboard() {
+        mainContent.innerHTML = `
+            <div class="card">
+              <h3><i class="fas fa-crown"></i> Admin Full Control</h3>
+              <p>Manage school, subjects, students, grades. <strong>Auto Promotion: Form 1→2→3→4</strong></p>
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+                <button id="adminSchoolProfileBtn" class="btn-sm">🏫 Edit Profile</button>
+                <button id="adminChangePasswordBtn" class="btn-sm">🔐 Change Password</button>
+                <button id="adminCoverHeroBtn" class="btn-sm" style="background:#2980b9; color:#fff;">🖼️ Edit Cover Hero</button>
+                <button id="adminCoverSectionsBtn" class="btn-sm" style="background:#1b6b4a; color:#fff;">📝 Edit Cover Sections</button>
+                <button id="adminCarouselBtn" class="btn-sm" style="background:#6b4a1b; color:#fff;"><i class="fas fa-slideshare"></i> Carousel</button>
+                <button id="adminGalleryBtn" class="btn-sm" style="background:#1b263b; color:#fff;"><i class="fas fa-images"></i> Gallery</button>
+                <button id="promoteStudentsBtn" class="btn-sm" style="background:#2980b9; color:#fff;">⬆️ Promote All Students</button>
+                <button id="adminManageStudents" class="btn-sm">👩‍🎓 Students</button>
+                <button id="adminManageSubjects" class="btn-sm">📚 Subjects</button>
+                <button id="adminManageGrades" class="btn-sm">🎓 Grades</button>
+                <button id="adminFeeOverview" class="btn-sm">💰 Fees</button>
+                <button id="adminGradingSystemsBtn" class="btn-sm" style="background:#1b263b; color:#fff;">📊 Grading</button>
+              </div>
+            </div>
+            <div class="card">
+              <h3>📊 School Info</h3>
+              <img src="${schoolProfile.logo}" style="width:100px; border-radius:80%; margin-bottom:8px;" />
+              <p><strong>${schoolProfile.name}</strong><br />${schoolProfile.motto}<br />${schoolProfile.phone} | ${schoolProfile.email}<br />${schoolProfile.address}</p>
+            </div>
+            <div class="card">
+              <h3>📐 Active Grading Systems</h3>
+              <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                <div style="background:#f0f5f2; border-radius:16px; padding:12px 18px;">
+                  <strong>Form One:</strong> ${gradingSystems.formOne?.name || 'Not set'}
+                  <span style="display:inline-block; background:#2980b9; color:#fff; border-radius:30px; padding:2px 12px; font-size:0.7rem; font-weight:700; margin-left:6px;">${gradingSystems.formOne?.grades?.length || 0} grades</span>
+                </div>
+                <div style="background:#f0f5f2; border-radius:16px; padding:12px 18px;">
+                  <strong>Forms 2-4:</strong> ${gradingSystems.formTwoFour?.name || 'Not set'}
+                  <span style="display:inline-block; background:#2980b9; color:#fff; border-radius:30px; padding:2px 12px; font-size:0.7rem; font-weight:700; margin-left:6px;">${gradingSystems.formTwoFour?.grades?.length || 0} grades</span>
+                </div>
+              </div>
+              <p style="font-size:0.8rem; color:#6e897f; margin-top:8px;"><i class="fas fa-edit"></i> Click "Grading Systems" above to edit boundaries and points.</p>
+            </div>
+            <div class="card">
+              <h3><i class="fas fa-images" style="color:#2980b9;"></i> Gallery &amp; Carousel</h3>
+              <p><strong>${galleryImages.length}</strong> gallery images &nbsp;|&nbsp; <strong>${carouselImages.length}</strong> carousel slides</p>
+              <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:8px;">
+                <button id="adminGalleryQuickBtn" class="btn-sm outline" style="font-size:0.8rem;"><i class="fas fa-images"></i> Manage Gallery</button>
+                <button id="adminCarouselQuickBtn" class="btn-sm outline" style="font-size:0.8rem;"><i class="fas fa-slideshare"></i> Manage Carousel</button>
+              </div>
+            </div>
+          `;
+        document.getElementById('adminSchoolProfileBtn')?.addEventListener('click', showSchoolProfileEditor);
+        document.getElementById('adminChangePasswordBtn')?.addEventListener('click', showChangePasswordModal);
+        document.getElementById('adminCoverHeroBtn')?.addEventListener('click', showCoverPageEditor);
+        document.getElementById('adminCoverSectionsBtn')?.addEventListener('click', showCoverSectionsEditor);
+        document.getElementById('adminCarouselBtn')?.addEventListener('click', renderAdminCarouselManager);
+        document.getElementById('adminGalleryBtn')?.addEventListener('click', renderAdminGalleryView);
+        document.getElementById('adminGalleryQuickBtn')?.addEventListener('click', renderAdminGalleryView);
+        document.getElementById('adminCarouselQuickBtn')?.addEventListener('click', renderAdminCarouselManager);
+        document.getElementById('promoteStudentsBtn')?.addEventListener('click', promoteAllStudents);
+        document.getElementById('adminManageStudents')?.addEventListener('click', renderManageStudents);
+        document.getElementById('adminManageSubjects')?.addEventListener('click', renderManageSubjectsTable);
+        document.getElementById('adminManageGrades')?.addEventListener('click', renderManageGrades);
+        document.getElementById('adminFeeOverview')?.addEventListener('click', renderAdminFeeOverview);
+        document.getElementById('adminGradingSystemsBtn')?.addEventListener('click', renderGradingSystemEditor);
+    }
+
+    // ─── ADMIN: GRADING SYSTEM EDITOR ──────────────────────────────
+
+    function renderGradingSystemEditor() {
+        let html = `
+            <div class="card">
+              <h3>📊 Grading Systems Editor</h3>
+              <p style="color:#6e897f; font-size:0.9rem;">Customize grade boundaries and points for Form One (lenient) and Forms 2-4 (standard).</p>
+              <div style="margin:12px 0;">
+                <button id="resetGradingDefaultsBtn" class="btn-sm outline" style="background:#eaf2f8; color:#1b263b; border-color:#2980b9;"><i class="fas fa-undo"></i> Reset to Defaults</button>
+              </div>
+              <div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:2px solid #e5ece8; padding-bottom:8px; flex-wrap:wrap;">
+                <button class="active-tab" data-system="formOne" style="background:transparent; border:none; padding:8px 20px; border-radius:30px; font-weight:600; cursor:pointer; color:#6e897f; transition:0.2s; font-size:0.9rem; background:#1b263b; color:#fff;">📘 Form One</button>
+                <button data-system="formTwoFour" style="background:transparent; border:none; padding:8px 20px; border-radius:30px; font-weight:600; cursor:pointer; color:#6e897f; transition:0.2s; font-size:0.9rem;">📗 Forms 2-4</button>
+              </div>
+              <div id="gradingSystemEditorContent"></div>
+            </div>
+          `;
+        mainContent.innerHTML = html;
+        document.querySelectorAll('.grading-system-tabs button, [data-system]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-system]').forEach(b => {
+                    b.style.background = 'transparent';
+                    b.style.color = '#6e897f';
+                });
+                this.style.background = '#1b263b';
+                this.style.color = '#fff';
+                const systemKey = this.dataset.system;
+                renderGradingSystemEditorContent(systemKey);
+            });
+        });
+        document.getElementById('resetGradingDefaultsBtn')?.addEventListener('click', () => {
+            if (confirm("Reset both grading systems to default values? This cannot be undone.")) {
+                gradingSystems = JSON.parse(JSON.stringify(DEFAULT_GRADING_SYSTEMS));
+                saveGradingSystems();
+                renderGradingSystemEditor();
+                if (currentRole === 'admin') renderAdminDashboard();
+            }
+        });
+        renderGradingSystemEditorContent('formOne');
+    }
+
+    function renderGradingSystemEditorContent(systemKey) {
+        const container = document.getElementById('gradingSystemEditorContent');
+        if (!container) return;
+        const system = gradingSystems[systemKey];
+        if (!system) {
+            container.innerHTML = `<p style="color:#c0392b;">System not found.</p>`;
+            return;
+        }
+        const isFormOne = systemKey === 'formOne';
+        let gradesHtml = `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+              <div>
+                <input id="systemNameInput_${systemKey}" value="${system.name.replace(/"/g, '&quot;')}" placeholder="System Name" style="font-weight:700; font-size:1.1rem; border:none; background:transparent; border-bottom:2px solid #d1d9d4; padding:4px 8px; color:#1f3a30; width:240px;" />
+                <span style="font-size:0.7rem; color:#6e897f; margin-left:8px;">${isFormOne ? '🔹 Lower thresholds' : '🔸 KCSE-style'}</span>
+              </div>
+              <button id="addGradeBtn_${systemKey}" class="btn-sm outline" style="font-size:0.8rem; padding:4px 16px;">+ Add Grade</button>
+            </div>
+            <div style="background:#f7faf8; border-radius:16px; padding:8px 12px; margin-bottom:12px;">
+              <div style="display:flex; gap:16px; font-size:0.75rem; color:#6e897f; font-weight:600; flex-wrap:wrap;">
+                <span>Grade</span>
+                <span style="margin-left:auto;">Min</span>
+                <span>Max</span>
+                <span>Points</span>
+                <span style="width:30px;"></span>
+              </div>
+          `;
+        const sorted = [...system.grades].sort((a, b) => b.minScore - a.minScore);
+        sorted.forEach((g, idx) => {
+            const globalIdx = system.grades.findIndex(gg => gg.grade === g.grade && gg.minScore === g.minScore);
+            gradesHtml += `
+              <div class="grade-row" style="display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #f0f5f2; flex-wrap:wrap;" data-idx="${globalIdx}">
+                <span style="font-weight:700; min-width:36px; color:#1f3a30;">${g.grade}</span>
+                <input type="number" class="grade-min" value="${g.minScore}" min="0" max="100" style="width:64px; padding:4px 6px; border:1px solid #d1d9d4; border-radius:10px; font-size:0.85rem; text-align:center;" />
+                <input type="number" class="grade-max" value="${g.maxScore}" min="0" max="100" style="width:64px; padding:4px 6px; border:1px solid #d1d9d4; border-radius:10px; font-size:0.85rem; text-align:center;" />
+                <input type="number" class="grade-points" value="${g.points}" min="0" max="12" style="width:64px; padding:4px 6px; border:1px solid #d1d9d4; border-radius:10px; font-size:0.85rem; text-align:center;" />
+                <button class="del-grade-btn" data-idx="${globalIdx}" data-system="${systemKey}" style="background:#e74c3c; color:#fff; border:none; border-radius:30px; padding:2px 10px; font-size:0.7rem; cursor:pointer; transition:0.2s;">✕</button>
+              </div>
+            `;
+        });
+        gradesHtml += `</div>
+            <p style="font-size:0.7rem; color:#6e897f;"><i class="fas fa-info-circle"></i> Edit values and click <strong>Save</strong> below. Ensure min ≤ max and no overlapping ranges.</p>
+            <div style="display:flex; gap:12px; margin-top:8px; flex-wrap:wrap;">
+              <button id="saveGradingSystemBtn_${systemKey}" class="btn-sm" style="background:#2980b9;">💾 Save ${isFormOne ? 'Form One' : 'Forms 2-4'} System</button>
+            </div>
+          `;
+        container.innerHTML = gradesHtml;
+        document.getElementById(`addGradeBtn_${systemKey}`)?.addEventListener('click', () => {
+            const lowest = system.grades.reduce((a, b) => a.minScore < b.minScore ? a : b);
+            const newGrade = { grade: "Z", minScore: 0, maxScore: Math.max(0, lowest.minScore - 1), points: 1 };
+            const usedLetters = system.grades.map(g => g.grade);
+            let letter = "Z";
+            let counter = 0;
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            while (usedLetters.includes(letter) && counter < 26) {
+                letter = alphabet[alphabet.length - 1 - counter] || "Z";
+                counter++;
+            }
+            newGrade.grade = letter;
+            system.grades.push(newGrade);
+            saveGradingSystems();
+            renderGradingSystemEditorContent(systemKey);
+        });
+        document.querySelectorAll(`.del-grade-btn[data-system="${systemKey}"]`).forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.idx);
+                if (system.grades.length <= 2) {
+                    alert("Cannot delete: at least 2 grades are required.");
+                    return;
+                }
+                if (confirm(`Delete grade "${system.grades[idx].grade}"?`)) {
+                    system.grades.splice(idx, 1);
+                    saveGradingSystems();
+                    renderGradingSystemEditorContent(systemKey);
+                }
+            });
+        });
+        document.getElementById(`saveGradingSystemBtn_${systemKey}`)?.addEventListener('click', () => {
+            const rows = container.querySelectorAll('.grade-row');
+            const newGrades = [];
+            let valid = true;
+            rows.forEach(row => {
+                const min = parseInt(row.querySelector('.grade-min').value);
+                const max = parseInt(row.querySelector('.grade-max').value);
+                const points = parseInt(row.querySelector('.grade-points').value);
+                const gradeLabel = row.querySelector('span:first-child').textContent;
+                if (isNaN(min) || isNaN(max) || isNaN(points)) {
+                    valid = false;
+                    return;
+                }
+                if (min > max) {
+                    valid = false;
+                    alert(`Grade ${gradeLabel}: Min (${min}) cannot be greater than Max (${max}).`);
+                    return;
+                }
+                if (min < 0 || max > 100) {
+                    valid = false;
+                    alert(`Grade ${gradeLabel}: Values must be between 0 and 100.`);
+                    return;
+                }
+                if (points < 0 || points > 12) {
+                    valid = false;
+                    alert(`Grade ${gradeLabel}: Points must be between 0 and 12.`);
+                    return;
+                }
+                newGrades.push({ grade: gradeLabel, minScore: min, maxScore: max, points });
+            });
+            if (!valid) return;
+            for (let i = 0; i < newGrades.length; i++) {
+                for (let j = i + 1; j < newGrades.length; j++) {
+                    const a = newGrades[i], b = newGrades[j];
+                    if (a.minScore <= b.maxScore && b.minScore <= a.maxScore) {
+                        valid = false;
+                        alert(`Overlapping ranges: ${a.grade} (${a.minScore}-${a.maxScore}) and ${b.grade} (${b.minScore}-${b.maxScore}).`);
+                        return;
+                    }
+                }
+            }
+            if (!valid) return;
+            newGrades.sort((a, b) => b.minScore - a.minScore);
+            system.grades = newGrades;
+            saveGradingSystems();
+            const nameInput = document.getElementById(`systemNameInput_${systemKey}`);
+            if (nameInput && nameInput.value.trim()) {
+                system.name = nameInput.value.trim();
+                saveGradingSystems();
+            }
+            alert(`✅ ${system.name} saved successfully!`);
+            renderGradingSystemEditorContent(systemKey);
+            if (currentRole === 'admin') renderAdminDashboard();
+        });
+    }
+
+    // ─── ADMIN: SUBJECTS ────────────────────────────────────────────
+
+    function renderManageSubjectsTable() {
+        let html = `
+            <div class="card">
+              <h3>📚 Subjects Master List</h3>
+              <button id="addSubjectBtn" class="btn-sm">+ Add Subject</button>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>Code</th><th>Name</th><th>Dept</th><th>Actions</th></tr></thead>
+                  <tbody>
+          `;
+        allSubjects.forEach((sub, idx) => {
+            html += `<tr><td>${sub.code}</td><td>${sub.name}</td><td>${sub.department}</td><td><button class="editSubBtn" data-idx="${idx}" class="btn-sm outline">✏️</button> <button class="delSubBtn" data-idx="${idx}" class="btn-sm danger">🗑️</button></td></tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+        mainContent.innerHTML = html;
+        document.getElementById('addSubjectBtn')?.addEventListener('click', () => showSubjectModal());
+        document.querySelectorAll('.editSubBtn').forEach(btn => btn.addEventListener('click', (e) => {
+            const idx = parseInt(btn.dataset.idx);
+            showSubjectModal(allSubjects[idx], idx);
+        }));
+        document.querySelectorAll('.delSubBtn').forEach(btn => btn.addEventListener('click', (e) => {
+            if (confirm("Delete this subject?")) {
+                allSubjects.splice(parseInt(btn.dataset.idx), 1);
+                renderManageSubjectsTable();
+            }
+        }));
+    }
+
+    function showSubjectModal(sub = null, idx = -1) {
+        const isEdit = !!sub;
+        const html = `
+            <h3>${isEdit ? 'Edit' : 'New'} Subject</h3>
+            <label>Code</label><input id="subCode" placeholder="e.g., MATH401" value="${sub?.code||''}" />
+            <label>Name</label><input id="subName" placeholder="e.g., Mathematics" value="${sub?.name||''}" />
+            <label>Department</label><input id="subDept" placeholder="e.g., Sciences" value="${sub?.department||''}" />
+            <div class="modal-actions">
+              <button id="saveSubBtn" class="btn-sm primary">Save</button>
+              <button id="cancelSubBtn" class="btn-sm outline">Cancel</button>
+            </div>
+          `;
+        showModal("Subject", html, null);
+        setTimeout(() => {
+            document.getElementById('saveSubBtn')?.addEventListener('click', () => {
+                const newSub = {
+                    code: document.getElementById('subCode').value.trim(),
+                    name: document.getElementById('subName').value.trim(),
+                    department: document.getElementById('subDept').value.trim()
+                };
+                if (!newSub.code || !newSub.name) { alert("Code and Name required."); return; }
+                if (isEdit && idx >= 0) allSubjects[idx] = newSub;
+                else allSubjects.push(newSub);
+                closeModal();
+                renderManageSubjectsTable();
+            });
+            document.getElementById('cancelSubBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    // ─── ADMIN: STUDENTS ────────────────────────────────────────────
+
+    function renderManageStudents() {
+        let html = `
+            <div class="card">
+              <h3>👩‍🎓 Manage Students</h3>
+              <button id="addStudentBtn" class="btn-sm">+ Add Student</button>
+              <div style="overflow-x:auto;">
+                <table>
+                  <thead><tr><th>ID</th><th>Name</th><th>Form</th><th>Subjects</th><th>Actions</th></tr></thead>
+                  <tbody>
+          `;
+        students.forEach((s, idx) => {
+            html += `<tr><td>${s.id}</td><td>${s.name}</td><td><select class="formSelectAdmin" data-idx="${idx}"><option value="1" ${s.form===1?'selected':''}>Form 1</option><option value="2" ${s.form===2?'selected':''}>Form 2</option><option value="3" ${s.form===3?'selected':''}>Form 3</option><option value="4" ${s.form===4?'selected':''}>Form 4</option></select></td><td>${s.assignedSubjects?.length||0} subjects</td><td><button class="assignSubjectsBtn" data-idx="${idx}" class="btn-sm outline">📋 Assign</button> <button class="editStudentBtn" data-idx="${idx}" class="btn-sm outline">✏️</button> <button class="deleteStudentBtn" data-idx="${idx}" class="btn-sm danger">🗑️</button></td></tr>`;
+        });
+        html += `</tbody></table></div></div>`;
+        mainContent.innerHTML = html;
+        document.querySelectorAll('.formSelectAdmin').forEach(sel => {
+            sel.addEventListener('change', (e) => {
+                students[parseInt(sel.dataset.idx)].form = parseInt(sel.value);
+                renderManageStudents();
+            });
+        });
+        document.getElementById('addStudentBtn')?.addEventListener('click', () => showStudentModal());
+        document.querySelectorAll('.assignSubjectsBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                showAssignSubjectsModal(students[idx], idx);
+            });
+        });
+        document.querySelectorAll('.editStudentBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                showStudentModal(students[idx], idx);
+            });
+        });
+        document.querySelectorAll('.deleteStudentBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                if (confirm("Delete this student?")) {
+                    students.splice(parseInt(btn.dataset.idx), 1);
+                    renderManageStudents();
+                }
+            });
+        });
+    }
+
+    function showAssignSubjectsModal(student, idx) {
+        let checks = `<div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:12px; margin:16px 0; max-height:400px; overflow-y:auto; border:1px solid #e2eae6; padding:16px; border-radius:24px;">`;
+        allSubjects.forEach(sub => {
+            const checked = (student.assignedSubjects || []).includes(sub.code);
+            checks += `<label><input type="checkbox" value="${sub.code}" ${checked?'checked':''}> ${sub.name} (${sub.code})</label>`;
+        });
+        checks += `</div><div class="modal-actions"><button id="saveAssignBtn" class="btn-sm primary">Save</button><button id="cancelAssignBtn" class="btn-sm outline">Cancel</button></div>`;
+        showModal(`Assign Subjects for ${student.name}`, checks, null);
+        setTimeout(() => {
+            document.getElementById('saveAssignBtn')?.addEventListener('click', () => {
+                const selected = Array.from(document.querySelectorAll('#modalInner input[type="checkbox"]:checked')).map(cb => cb.value);
+                student.assignedSubjects = selected;
+                closeModal();
+                renderManageStudents();
+            });
+            document.getElementById('cancelAssignBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    function showStudentModal(student = null, idx = -1) {
+        const isEdit = !!student;
+        const html = `
+            <h3>${isEdit ? 'Edit' : 'Add'} Student</h3>
+            <label>ID</label><input id="studId" placeholder="e.g., NY9000" value="${student?.id||''}" ${isEdit ? 'readonly' : ''} />
+            <label>Full Name</label><input id="studName" placeholder="Full Name" value="${student?.name||''}" />
+            <label>Form</label>
+            <select id="studForm"><option value="1">Form 1</option><option value="2">Form 2</option><option value="3">Form 3</option><option value="4">Form 4</option></select>
+            <label>Fee Balance (KES)</label><input id="studBalance" type="number" placeholder="0" value="${student?.feeBalance||0}" />
+            <label>Progress %</label><input id="studProgress" type="number" placeholder="0" value="${student?.progress||0}" />
+            <div class="modal-actions">
+              <button id="saveStudentBtn" class="btn-sm primary">${isEdit ? 'Update' : 'Create'}</button>
+              <button id="cancelStudentBtn" class="btn-sm outline">Cancel</button>
+            </div>
+          `;
+        showModal("Student", html, null);
+        setTimeout(() => {
+            if (student) document.getElementById('studForm').value = student.form;
+            document.getElementById('saveStudentBtn')?.addEventListener('click', () => {
+                const id = document.getElementById('studId').value.trim();
+                const name = document.getElementById('studName').value.trim();
+                const form = parseInt(document.getElementById('studForm').value);
+                const balance = parseFloat(document.getElementById('studBalance').value) || 0;
+                const progress = parseInt(document.getElementById('studProgress').value) || 0;
+                if (!id || !name) { alert("ID and Name required."); return; }
+                if (isEdit) {
+                    student.name = name;
+                    student.form = form;
+                    student.feeBalance = balance;
+                    student.progress = progress;
+                    if (!student.assignedSubjects) student.assignedSubjects = [];
+                    if (!student.transactions) student.transactions = [];
+                    if (!student.grades) student.grades = [];
+                } else {
+                    if (students.find(s => s.id === id)) { alert("ID already exists."); return; }
+                    students.push({ id, name, form, feeBalance: balance, progress, assignedSubjects: [], transactions: [], grades: [] });
+                }
+                closeModal();
+                renderManageStudents();
+            });
+            document.getElementById('cancelStudentBtn')?.addEventListener('click', closeModal);
+        }, 50);
+    }
+
+    // ─── ADMIN: GRADES ──────────────────────────────────────────────
+
+    function renderManageGrades() {
+        let html = `
+            <div class="card">
+              <h3>🎓 Manage Grades (Points)</h3>
+              <p style="color:#6e897f; font-size:0.85rem;"><i class="fas fa-info-circle"></i> Grades use the grading system for each form.</p>
+              <table><thead><tr><th>Student</th><th>Form</th><th>Grading System</th><th>Action</th></tr></thead><tbody>
+          `;
+        students.forEach((s, idx) => {
+            const sysName = getGradingSystemName(s.form);
+            html += `<tr><td>${s.name} (${s.id})</td><td>Form ${s.form}</td><td><span style="font-size:0.75rem; background:#e5f4ef; padding:2px 10px; border-radius:30px;">${sysName}</span></td><td><button class="manageGradeBtn" data-idx="${idx}" class="btn-sm outline">Manage</button></td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+        mainContent.innerHTML = html;
+        document.querySelectorAll('.manageGradeBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(btn.dataset.idx);
+                showGradeManagementModal(students[idx], idx);
+            });
+        });
+    }
+
+    function showGradeManagementModal(student, idx) {
+        let formsHtml = `<h3>Grades for ${student.name} (Form ${student.form})</h3>
+            <p style="color:#6e897f; font-size:0.85rem;"><i class="fas fa-info-circle"></i> Using: <strong>${getGradingSystemName(student.form)}</strong></p>`;
+        for (let f = 1; f <= 4; f++) {
+            const grades = (student.grades || []).filter(g => g.form === f);
+            formsHtml += `<div style="border:1px solid #ddd; border-radius:20px; padding:12px; margin-top:12px;">
+              <h4>Form ${f} <span style="font-size:0.7rem; font-weight:400; color:#6e897f;">(${getGradingSystemName(f)})</span></h4>`;
+            if (grades.length) {
+                formsHtml += `<table><thead><tr><th>Subject</th><th>Term</th><th>Score</th><th>Grade</th><th>Points</th><th></th></tr></thead><tbody>`;
+                grades.forEach((g, gidx) => {
+                    const subj = allSubjects.find(s => s.code === g.subjectCode) || { name: g.subjectCode };
+                    const pts = g.points || getPointsFromGrade(g.grade, f);
+                    formsHtml += `<tr><td>${subj.name}</td><td>${g.term}</td><td>${g.score}</td><td>${g.grade}</td><td>${pts}</td><td><button class="delGradeBtn" data-form="${f}" data-gidx="${gidx}" data-stuidx="${idx}" class="btn-sm danger">🗑️</button></td></tr>`;
+                });
+                formsHtml += `</tbody></table>`;
+            } else formsHtml += `<p style="color:#6e897f;">No grades.</p>`;
+            formsHtml += `<button class="addGradeFormBtn" data-form="${f}" data-stuidx="${idx}" class="btn-sm outline" style="margin-top:8px;">+ Add Grade</button>`;
+            formsHtml += `</div>`;
+        }
+        formsHtml += `<div class="modal-actions"><button id="closeGradeModal" class="btn-sm outline">Close</button></div>`;
+        showModal(`Grades - ${student.name}`, formsHtml, null);
+        document.querySelectorAll('.addGradeFormBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const formNum = parseInt(btn.dataset.form);
+                const sidx = parseInt(btn.dataset.stuidx);
+                const target = students[sidx];
+                const opts = allSubjects.map(s => `<option value="${s.code}">${s.name}</option>`).join('');
+                const addHtml = `
+                <h4>Add Grade — Form ${formNum}</h4>
+                <p style="font-size:0.8rem; color:#6e897f;">Grading system: ${getGradingSystemName(formNum)}</p>
+                <label>Subject</label><select id="gradeSubject">${opts}</select>
+                <label>Term</label><input id="gradeTerm" placeholder="e.g., Term 1" />
+                <label>Score</label><input type="number" id="gradeScore" placeholder="0-100" />
+                <div class="modal-actions">
+                  <button id="saveNewGradeBtn" class="btn-sm primary">Save</button>
+                  <button id="cancelNewGradeBtn" class="btn-sm outline">Cancel</button>
+                </div>
+              `;
+                showModal("Add Grade", addHtml, null);
+                setTimeout(() => {
+                    document.getElementById('saveNewGradeBtn')?.addEventListener('click', () => {
+                        const subCode = document.getElementById('gradeSubject').value;
+                        const term = document.getElementById('gradeTerm').value.trim();
+                        const score = parseInt(document.getElementById('gradeScore').value);
+                        if (!term || isNaN(score) || score < 0 || score > 100) {
+                            alert("Please enter a valid term and score (0-100).");
+                            return;
+                        }
+                        const info = getGradeInfoFromScore(score, formNum);
+                        if (!target.grades) target.grades = [];
+                        target.grades.push({ form: formNum, term, subjectCode: subCode, score, grade: info.grade, points: info.points });
+                        closeModal();
+                        showGradeManagementModal(target, sidx);
+                    });
+                    document.getElementById('cancelNewGradeBtn')?.addEventListener('click', closeModal);
+                }, 50);
+            });
+        });
+        document.querySelectorAll('.delGradeBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const formNum = parseInt(btn.dataset.form);
+                const gidx = parseInt(btn.dataset.gidx);
+                const sidx = parseInt(btn.dataset.stuidx);
+                const target = students[sidx];
+                const gradeList = target.grades.filter(g => g.form === formNum);
+                const actualIdx = target.grades.findIndex(g => g === gradeList[gidx]);
+                if (actualIdx !== -1) target.grades.splice(actualIdx, 1);
+                showGradeManagementModal(target, sidx);
+            });
+        });
+        document.getElementById('closeGradeModal')?.addEventListener('click', closeModal);
+    }
+
+    // ─── ADMIN: FEE OVERVIEW ────────────────────────────────────────
+
+    function renderAdminFeeOverview() {
+        const total = students.reduce((s, stu) => s + stu.feeBalance, 0);
+        let html = `
+            <div class="card">
+              <h3>💰 Fee Overview</h3>
+              <p><strong>Total Outstanding:</strong> KES ${total.toLocaleString()}</p>
+              <table><thead><tr><th>Student</th><th>Form</th><th>Balance</th><th>Adjust</th></tr></thead><tbody>
+          `;
+        students.forEach((s, idx) => {
+            html += `<tr><td>${s.name}</td><td>Form ${s.form}</td><td>KES ${s.feeBalance.toLocaleString()}</td><td><button class="adjustFeeBtn" data-idx="${idx}" class="btn-sm outline">✏️</button></td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+        mainContent.innerHTML = html;
+        document.querySelectorAll('.adjustFeeBtn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const s = students[parseInt(btn.dataset.idx)];
+                const newBal = prompt("New balance (KES):", s.feeBalance);
+                if (newBal !== null && !isNaN(parseFloat(newBal))) {
+                    s.feeBalance = parseFloat(newBal);
+                    renderAdminFeeOverview();
+                }
+            });
+        });
+    }
+
+    // ─── NAVIGATION ──────────────────────────────────────────────────
+
+    function renderNav() {
+        if (currentRole === 'student') {
+            dynamicNav.innerHTML = `
+              <div class="nav-item active" data-view="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+              <div class="nav-item" data-view="results"><i class="fas fa-chart-line"></i> Results</div>
+              <div class="nav-item" data-view="financials"><i class="fas fa-coins"></i> Financials</div>
+              <div class="nav-item" data-view="gallery"><i class="fas fa-images"></i> Gallery</div>
+            `;
+            attachNavEventsStudent();
+        } else {
+            dynamicNav.innerHTML = `
+              <div class="nav-item active" data-view="adminDashboard"><i class="fas fa-chalkboard-user"></i> Admin</div>
+              <div class="nav-item" data-view="manageStudents"><i class="fas fa-users"></i> Students</div>
+              <div class="nav-item" data-view="manageSubjects"><i class="fas fa-book-open"></i> Subjects</div>
+              <div class="nav-item" data-view="manageGrades"><i class="fas fa-star"></i> Grades</div>
+              <div class="nav-item" data-view="feeOverview"><i class="fas fa-chart-line"></i> Fees</div>
+              <div class="nav-item" data-view="gradingSystems"><i class="fas fa-sliders-h"></i> Grading</div>
+              <div class="nav-item" data-view="adminGallery"><i class="fas fa-images"></i> Gallery</div>
+              <div class="nav-item" data-view="adminCarousel"><i class="fas fa-slideshare"></i> Carousel</div>
+            `;
+            attachNavEventsAdmin();
+        }
+    }
+
+    function attachNavEventsStudent() {
+        document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+            el.removeEventListener('click', studentNavHandler);
+            el.addEventListener('click', studentNavHandler);
+        });
+    }
+
+    function studentNavHandler(e) {
+        const v = this.dataset.view;
+        if (v === 'dashboard' || v === 'results') renderStudentDashboard();
+        else if (v === 'financials') document.getElementById('viewStatementBtn')?.click();
+        else if (v === 'gallery') {
+            const gallerySection = document.getElementById('gallerySection');
+            if (gallerySection) gallerySection.scrollIntoView({ behavior: 'smooth' });
+        }
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+    }
+
+    function attachNavEventsAdmin() {
+        document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+            el.removeEventListener('click', adminNavHandler);
+            el.addEventListener('click', adminNavHandler);
+        });
+    }
+
+    function adminNavHandler(e) {
+        const v = this.dataset.view;
+        if (v === 'adminDashboard') renderAdminDashboard();
+        else if (v === 'manageStudents') renderManageStudents();
+        else if (v === 'manageSubjects') renderManageSubjectsTable();
+        else if (v === 'manageGrades') renderManageGrades();
+        else if (v === 'feeOverview') renderAdminFeeOverview();
+        else if (v === 'gradingSystems') renderGradingSystemEditor();
+        else if (v === 'adminGallery') renderAdminGalleryView();
+        else if (v === 'adminCarousel') renderAdminCarouselManager();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+    }
+
+    // ─── LOGIN / LOGOUT ─────────────────────────────────────────────
+
+    function performLogin() {
+        const role = document.querySelector('input[name="loginRole"]:checked').value;
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!username || !password) { alert("Enter credentials."); return; }
+        if (role === 'admin') {
+            if (verifyAdminLogin(username, password)) {
+                currentRole = 'admin';
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboardContainer').style.display = 'block';
+                renderNav();
+                renderAdminDashboard();
+                renderCoverGallery();
+            } else {
+                alert("Admin login failed!");
+            }
+        } else {
+            const student = students.find(s => s.id === username);
+            if (!student) { alert("Student not found. Try NY9028 or NY9027"); return; }
+            if (password !== student.id && password !== "pass123") { alert("Invalid password (use student ID)."); return; }
+            currentRole = 'student';
+            currentUser = {
+                role: 'student',
+                data: {
+                    ...student,
+                    transactions: student.transactions ? [...student.transactions] : [],
+                    grades: student.grades ? [...student.grades] : [],
+                    assignedSubjects: [...(student.assignedSubjects || [])]
+                }
+            };
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            renderNav();
+            renderStudentDashboard();
+            renderCoverGallery();
+        }
+    }
+
+    function logout() {
+        currentUser = null;
+        currentRole = null;
+        document.getElementById('loginContainer').style.display = 'flex';
+        document.getElementById('dashboardContainer').style.display = 'none';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        if (window._mpesaTimeout) {
+            clearTimeout(window._mpesaTimeout);
+            window._mpesaTimeout = null;
+        }
+        const coverPage = document.getElementById('coverPage');
+        coverPage.style.display = 'block';
+        coverPage.classList.remove('hidden');
+        document.getElementById('loginContainer').style.display = 'none';
+        renderCarousel();
+        renderCoverGallery();
+    }
+
+    // ─── INIT ────────────────────────────────────────────────────────
+
+    loadGradingSystems();
+    loadCoverSettings();
+    loadAdminCredentials();
+    loadSchoolProfile();
+    loadCarouselImages();
+    loadGalleryImages();
+    loadCoverSections();
+
+    renderCarousel();
+    renderCoverSections();
+    renderCoverGallery();
+
+    // ─── EVENTS ──────────────────────────────────────────────────────
+
+    document.getElementById('enterPortalBtn').addEventListener('click', function() {
+        const coverPage = document.getElementById('coverPage');
+        coverPage.classList.add('hidden');
+        setTimeout(() => {
+            coverPage.style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('loginContainer').style.opacity = '0';
+            document.getElementById('loginContainer').style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                document.getElementById('loginContainer').style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                document.getElementById('loginContainer').style.opacity = '1';
+                document.getElementById('loginContainer').style.transform = 'translateY(0)';
+            }, 50);
+        }, 850);
+    });
+
+    signinBtn.addEventListener('click', performLogin);
+    logoutBtn.addEventListener('click', logout);
+
+    document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') performLogin();
+    });
+    document.getElementById('loginUsername').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') performLogin();
+    });
+
+    document.getElementById('globalModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('globalModal')) {
+            if (window._mpesaTimeout) {
+                clearTimeout(window._mpesaTimeout);
+                window._mpesaTimeout = null;
+            }
+            closeModal();
+        }
+    });
+
+    document.getElementById('addGalleryImageBtn')?.addEventListener('click', showAddGalleryImageModal);
+    document.getElementById('refreshGalleryBtn')?.addEventListener('click', renderCoverGallery);
+
+    console.log('✅ Nyangwa Boys High School Portal loaded successfully.');
+    console.log(`📸 Carousel has ${carouselImages.length} slides.`);
+    console.log(`🖼️ Gallery has ${galleryImages.length} images.`);
+    console.log(`📝 Cover sections loaded.`);
+</script>
+</body>
+</html>
